@@ -1,1 +1,21 @@
+# CDS generated models
 @cds-models
+
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+.env.*
+*.pem
+credentials.json
+
+# OS / editor
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# Logs & temp
+*.log
+.gen/
