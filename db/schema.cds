@@ -1,3 +1,6 @@
+namespace crm;
+
+
 entity CustomerStatusCode {
     key code : String(20);
     description : String (100);

@@ -1,0 +1,649 @@
+{
+  "namespace": "crm",
+  "definitions": {
+    "crm.CustomerStatusCode": {
+      "kind": "entity",
+      "elements": {
+        "code": {
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "description": {
+          "type": "cds.String",
+          "length": 100
+        },
+        "colorCode": {
+          "type": "cds.String",
+          "length": 7
+        }
+      }
+    },
+    "crm.Customer": {
+      "kind": "entity",
+      "elements": {
+        "customerID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "firstName": {
+          "type": "cds.String",
+          "length": 50
+        },
+        "lastName": {
+          "type": "cds.String",
+          "length": 50
+        },
+        "email": {
+          "type": "cds.String",
+          "length": 100
+        },
+        "phone": {
+          "type": "cds.String",
+          "length": 20
+        },
+        "statusCode": {
+          "type": "cds.Association",
+          "target": "crm.CustomerStatusCode",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "averageRating": {
+          "type": "cds.Decimal",
+          "precision": 3,
+          "scale": 2
+        },
+        "interactions": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "crm.Interaction",
+          "on": [
+            {
+              "ref": [
+                "interactions",
+                "customer"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "preferences": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "crm.Preference",
+          "on": [
+            {
+              "ref": [
+                "preferences",
+                "customer"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "feedbacks": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "crm.Feedback",
+          "on": [
+            {
+              "ref": [
+                "feedbacks",
+                "customer"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "crm.Preference": {
+      "kind": "entity",
+      "elements": {
+        "preferenceID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "productCategory": {
+          "type": "cds.String",
+          "length": 50
+        },
+        "notes": {
+          "type": "cds.String",
+          "length": 200
+        },
+        "customer": {
+          "type": "cds.Association",
+          "target": "crm.Customer",
+          "keys": [
+            {
+              "ref": [
+                "customerID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "crm.Feedback": {
+      "kind": "entity",
+      "elements": {
+        "feedbackID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "rating": {
+          "type": "cds.Integer"
+        },
+        "comments": {
+          "type": "cds.String",
+          "length": 500
+        },
+        "feedbackDate": {
+          "type": "cds.DateTime"
+        },
+        "customer": {
+          "type": "cds.Association",
+          "target": "crm.Customer",
+          "keys": [
+            {
+              "ref": [
+                "customerID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "crm.Interaction": {
+      "kind": "entity",
+      "elements": {
+        "interactionID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "date": {
+          "type": "cds.DateTime"
+        },
+        "method": {
+          "type": "cds.String",
+          "length": 30
+        },
+        "summary": {
+          "type": "cds.String",
+          "length": 200
+        },
+        "description": {
+          "type": "cds.String",
+          "length": 1000
+        },
+        "customer": {
+          "type": "cds.Association",
+          "target": "crm.Customer",
+          "keys": [
+            {
+              "ref": [
+                "customerID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "crm.CustomerNote": {
+      "kind": "entity",
+      "elements": {
+        "noteID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "content": {
+          "type": "cds.String",
+          "length": 1000
+        },
+        "authorID": {
+          "type": "cds.String",
+          "length": 50
+        },
+        "date": {
+          "type": "cds.DateTime"
+        },
+        "customer": {
+          "type": "cds.Association",
+          "target": "crm.Customer",
+          "keys": [
+            {
+              "ref": [
+                "customerID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "crm.MarketingCampaign": {
+      "kind": "entity",
+      "elements": {
+        "campaignID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "name": {
+          "type": "cds.String",
+          "length": 100
+        },
+        "startDate": {
+          "type": "cds.Date"
+        },
+        "endDate": {
+          "type": "cds.Date"
+        },
+        "description": {
+          "type": "cds.String",
+          "length": 500
+        },
+        "customer": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "crm.Customer"
+        }
+      }
+    },
+    "crm.LoyaltyProgram": {
+      "kind": "entity",
+      "elements": {
+        "loyaltyProgramID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "programName": {
+          "type": "cds.String",
+          "length": 50
+        },
+        "pointsEarned": {
+          "type": "cds.Integer"
+        },
+        "pointsRedeemed": {
+          "type": "cds.Integer"
+        },
+        "tierLevel": {
+          "type": "cds.String",
+          "length": 20
+        },
+        "customer": {
+          "type": "cds.Association",
+          "target": "crm.Customer",
+          "keys": [
+            {
+              "ref": [
+                "customerID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AdminService": {
+      "@source": "srv/admin-service.cds",
+      "kind": "service",
+      "@requires": "CRM-Admin"
+    },
+    "AdminService.Customers": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "crm.Customer"
+          ]
+        }
+      },
+      "elements": {
+        "customerID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "firstName": {
+          "type": "cds.String",
+          "length": 50
+        },
+        "lastName": {
+          "type": "cds.String",
+          "length": 50
+        },
+        "email": {
+          "type": "cds.String",
+          "length": 100
+        },
+        "phone": {
+          "type": "cds.String",
+          "length": 20
+        },
+        "statusCode": {
+          "type": "cds.Association",
+          "target": "AdminService.StatusCodes",
+          "keys": [
+            {
+              "ref": [
+                "code"
+              ]
+            }
+          ]
+        },
+        "averageRating": {
+          "type": "cds.Decimal",
+          "precision": 3,
+          "scale": 2
+        },
+        "interactions": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "AdminService.Interactions",
+          "on": [
+            {
+              "ref": [
+                "interactions",
+                "customer"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "preferences": {
+          "type": "cds.Association",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "AdminService.Preferences",
+          "on": [
+            {
+              "ref": [
+                "preferences",
+                "customer"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        },
+        "feedbacks": {
+          "type": "cds.Composition",
+          "cardinality": {
+            "max": "*"
+          },
+          "target": "AdminService.Feedbacks",
+          "on": [
+            {
+              "ref": [
+                "feedbacks",
+                "customer"
+              ]
+            },
+            "=",
+            {
+              "ref": [
+                "$self"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AdminService.Interactions": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "crm.Interaction"
+          ]
+        }
+      },
+      "elements": {
+        "interactionID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "date": {
+          "type": "cds.DateTime"
+        },
+        "method": {
+          "type": "cds.String",
+          "length": 30
+        },
+        "summary": {
+          "type": "cds.String",
+          "length": 200
+        },
+        "description": {
+          "type": "cds.String",
+          "length": 1000
+        },
+        "customer": {
+          "type": "cds.Association",
+          "target": "AdminService.Customers",
+          "keys": [
+            {
+              "ref": [
+                "customerID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AdminService.Preferences": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "crm.Preference"
+          ]
+        }
+      },
+      "elements": {
+        "preferenceID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "productCategory": {
+          "type": "cds.String",
+          "length": 50
+        },
+        "notes": {
+          "type": "cds.String",
+          "length": 200
+        },
+        "customer": {
+          "type": "cds.Association",
+          "target": "AdminService.Customers",
+          "keys": [
+            {
+              "ref": [
+                "customerID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AdminService.Feedbacks": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "crm.Feedback"
+          ]
+        }
+      },
+      "elements": {
+        "feedbackID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "rating": {
+          "type": "cds.Integer"
+        },
+        "comments": {
+          "type": "cds.String",
+          "length": 500
+        },
+        "feedbackDate": {
+          "type": "cds.DateTime"
+        },
+        "customer": {
+          "type": "cds.Association",
+          "target": "AdminService.Customers",
+          "keys": [
+            {
+              "ref": [
+                "customerID"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AdminService.StatusCodes": {
+      "kind": "entity",
+      "projection": {
+        "from": {
+          "ref": [
+            "crm.CustomerStatusCode"
+          ]
+        }
+      },
+      "elements": {
+        "code": {
+          "key": true,
+          "type": "cds.String",
+          "length": 20
+        },
+        "description": {
+          "type": "cds.String",
+          "length": 100
+        },
+        "colorCode": {
+          "type": "cds.String",
+          "length": 7
+        }
+      }
+    },
+    "AdminService.updateCustomerStatus": {
+      "kind": "action",
+      "params": {
+        "customerID": {
+          "type": "cds.UUID"
+        }
+      },
+      "returns": {
+        "type": "cds.Boolean"
+      }
+    },
+    "AdminService.calculateAverageRating": {
+      "kind": "action",
+      "params": {
+        "customerID": {
+          "type": "cds.UUID"
+        }
+      },
+      "returns": {
+        "type": "cds.Decimal",
+        "precision": 3,
+        "scale": 2
+      }
+    },
+    "cds.outbox.Messages": {
+      "kind": "entity",
+      "elements": {
+        "ID": {
+          "key": true,
+          "type": "cds.UUID"
+        },
+        "timestamp": {
+          "type": "cds.Timestamp"
+        },
+        "target": {
+          "type": "cds.String"
+        },
+        "msg": {
+          "type": "cds.LargeString"
+        },
+        "attempts": {
+          "type": "cds.Integer",
+          "default": {
+            "val": 0
+          }
+        },
+        "partition": {
+          "type": "cds.Integer",
+          "default": {
+            "val": 0
+          }
+        },
+        "lastError": {
+          "type": "cds.LargeString"
+        },
+        "lastAttemptTimestamp": {
+          "type": "cds.Timestamp"
+        },
+        "status": {
+          "type": "cds.String",
+          "length": 23
+        },
+        "task": {
+          "type": "cds.String",
+          "length": 255
+        },
+        "appid": {
+          "type": "cds.String",
+          "length": 255
+        }
+      }
+    }
+  },
+  "meta": {
+    "creator": "CDS Compiler v6.9.2",
+    "compilerVersion": "6.9.2",
+    "compilerCsnFlavor": "inferred",
+    "flavor": "inferred"
+  },
+  "$version": "2.0"
+}

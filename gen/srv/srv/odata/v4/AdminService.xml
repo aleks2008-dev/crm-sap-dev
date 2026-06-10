@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+  <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+    <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+  </edmx:Reference>
+  <edmx:Reference Uri="https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.xml">
+    <edmx:Include Alias="Core" Namespace="Org.OData.Core.V1"/>
+  </edmx:Reference>
+  <edmx:DataServices>
+    <Schema Namespace="AdminService" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+      <Annotation Term="Core.Links">
+        <Collection>
+          <Record>
+            <PropertyValue Property="rel" String="author"/>
+            <PropertyValue Property="href" String="https://cap.cloud.sap"/>
+          </Record>
+        </Collection>
+      </Annotation>
+      <EntityContainer Name="EntityContainer">
+        <EntitySet Name="Customers" EntityType="AdminService.Customers">
+          <NavigationPropertyBinding Path="statusCode" Target="StatusCodes"/>
+          <NavigationPropertyBinding Path="interactions" Target="Interactions"/>
+          <NavigationPropertyBinding Path="preferences" Target="Preferences"/>
+          <NavigationPropertyBinding Path="feedbacks" Target="Feedbacks"/>
+        </EntitySet>
+        <EntitySet Name="Interactions" EntityType="AdminService.Interactions">
+          <NavigationPropertyBinding Path="customer" Target="Customers"/>
+        </EntitySet>
+        <EntitySet Name="Preferences" EntityType="AdminService.Preferences">
+          <NavigationPropertyBinding Path="customer" Target="Customers"/>
+        </EntitySet>
+        <EntitySet Name="Feedbacks" EntityType="AdminService.Feedbacks">
+          <NavigationPropertyBinding Path="customer" Target="Customers"/>
+        </EntitySet>
+        <EntitySet Name="StatusCodes" EntityType="AdminService.StatusCodes"/>
+        <ActionImport Name="updateCustomerStatus" Action="AdminService.updateCustomerStatus"/>
+        <ActionImport Name="calculateAverageRating" Action="AdminService.calculateAverageRating"/>
+      </EntityContainer>
+      <EntityType Name="Customers">
+        <Key>
+          <PropertyRef Name="customerID"/>
+        </Key>
+        <Property Name="customerID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="firstName" Type="Edm.String" MaxLength="50"/>
+        <Property Name="lastName" Type="Edm.String" MaxLength="50"/>
+        <Property Name="email" Type="Edm.String" MaxLength="100"/>
+        <Property Name="phone" Type="Edm.String" MaxLength="20"/>
+        <NavigationProperty Name="statusCode" Type="AdminService.StatusCodes">
+          <ReferentialConstraint Property="statusCode_code" ReferencedProperty="code"/>
+        </NavigationProperty>
+        <Property Name="statusCode_code" Type="Edm.String" MaxLength="20"/>
+        <Property Name="averageRating" Type="Edm.Decimal" Precision="3" Scale="2"/>
+        <NavigationProperty Name="interactions" Type="Collection(AdminService.Interactions)" Partner="customer">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+        <NavigationProperty Name="preferences" Type="Collection(AdminService.Preferences)" Partner="customer"/>
+        <NavigationProperty Name="feedbacks" Type="Collection(AdminService.Feedbacks)" Partner="customer">
+          <OnDelete Action="Cascade"/>
+        </NavigationProperty>
+      </EntityType>
+      <EntityType Name="Interactions">
+        <Key>
+          <PropertyRef Name="interactionID"/>
+        </Key>
+        <Property Name="interactionID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="date" Type="Edm.DateTimeOffset"/>
+        <Property Name="method" Type="Edm.String" MaxLength="30"/>
+        <Property Name="summary" Type="Edm.String" MaxLength="200"/>
+        <Property Name="description" Type="Edm.String" MaxLength="1000"/>
+        <NavigationProperty Name="customer" Type="AdminService.Customers" Partner="interactions">
+          <ReferentialConstraint Property="customer_customerID" ReferencedProperty="customerID"/>
+        </NavigationProperty>
+        <Property Name="customer_customerID" Type="Edm.Guid"/>
+      </EntityType>
+      <EntityType Name="Preferences">
+        <Key>
+          <PropertyRef Name="preferenceID"/>
+        </Key>
+        <Property Name="preferenceID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="productCategory" Type="Edm.String" MaxLength="50"/>
+        <Property Name="notes" Type="Edm.String" MaxLength="200"/>
+        <NavigationProperty Name="customer" Type="AdminService.Customers" Partner="preferences">
+          <ReferentialConstraint Property="customer_customerID" ReferencedProperty="customerID"/>
+        </NavigationProperty>
+        <Property Name="customer_customerID" Type="Edm.Guid"/>
+      </EntityType>
+      <EntityType Name="Feedbacks">
+        <Key>
+          <PropertyRef Name="feedbackID"/>
+        </Key>
+        <Property Name="feedbackID" Type="Edm.Guid" Nullable="false"/>
+        <Property Name="rating" Type="Edm.Int32"/>
+        <Property Name="comments" Type="Edm.String" MaxLength="500"/>
+        <Property Name="feedbackDate" Type="Edm.DateTimeOffset"/>
+        <NavigationProperty Name="customer" Type="AdminService.Customers" Partner="feedbacks">
+          <ReferentialConstraint Property="customer_customerID" ReferencedProperty="customerID"/>
+        </NavigationProperty>
+        <Property Name="customer_customerID" Type="Edm.Guid"/>
+      </EntityType>
+      <EntityType Name="StatusCodes">
+        <Key>
+          <PropertyRef Name="code"/>
+        </Key>
+        <Property Name="code" Type="Edm.String" MaxLength="20" Nullable="false"/>
+        <Property Name="description" Type="Edm.String" MaxLength="100"/>
+        <Property Name="colorCode" Type="Edm.String" MaxLength="7"/>
+      </EntityType>
+      <Action Name="updateCustomerStatus" IsBound="false">
+        <Parameter Name="customerID" Type="Edm.Guid"/>
+        <ReturnType Type="Edm.Boolean"/>
+      </Action>
+      <Action Name="calculateAverageRating" IsBound="false">
+        <Parameter Name="customerID" Type="Edm.Guid"/>
+        <ReturnType Type="Edm.Decimal" Precision="3" Scale="2"/>
+      </Action>
+      <Annotations Target="AdminService.Customers/customerID">
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AdminService.Interactions/interactionID">
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AdminService.Preferences/preferenceID">
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+      <Annotations Target="AdminService.Feedbacks/feedbackID">
+        <Annotation Term="Core.ComputedDefaultValue" Bool="true"/>
+      </Annotations>
+    </Schema>
+  </edmx:DataServices>
+</edmx:Edmx>
