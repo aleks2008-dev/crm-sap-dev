@@ -1,0 +1,92 @@
+### Creating a new client via AdminService
+POST http://localhost:4004/admin/Customers
+Authorization: Basic admin 
+Content-Type: application/json
+
+{
+  "customerID": "33333333-3333-3333-3333-333333333333",
+  "firstName": "Alex",
+  "lastName": "Brown",
+  "email": "alex.brown@example.com",
+  "phone": "+1987654321",
+  "statusCode_code": "Active",
+  "averageRating": 0.00
+}
+
+### 1. GET - Get a list of all clients
+GET http://localhost:4004/admin/Customers
+Authorization: Basic admin
+
+###
+
+### 2. GET - Get one specific client by its ID
+GET http://localhost:4004/admin/Customers(33333333-3333-3333-3333-333333333333)
+Authorization: Basic admin
+
+###
+
+### 3. PATCH - Partial update of client data (for example, phone number and last name have changed)
+PATCH http://localhost:4004/admin/Customers(33333333-3333-3333-3333-333333333333)
+Authorization: Basic admin
+Content-Type: application/json
+
+{
+  "lastName": "Brown-Jr",
+  "phone": "+79990001122"
+}
+
+### 4. POST - Adding the first review for our client (needed for rating test)
+POST http://localhost:4004/admin/Feedbacks
+Authorization: Basic admin
+Content-Type: application/json
+
+{
+  "feedbackID": "a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1",
+  "rating": 5,
+  "comments": "Excellent service and fast delivery!",
+  "feedbackDate": "2026-06-13T10:00:00Z",
+  "customer_customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 5. POST - Adding a second review for the same client
+POST http://localhost:4004/admin/Feedbacks
+Authorization: Basic admin
+Content-Type: application/json
+
+{
+  "feedbackID": "b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+  "rating": 3,
+  "comments": "The product is fine, but the box was damaged.",
+  "feedbackDate": "2026-06-13T12:00:00Z",
+  "customer_customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 6. ACTION - Calling a custom action to calculate the average rating
+POST http://localhost:4004/admin/calculateAverageRating
+Authorization: Basic admin
+Content-Type: application/json
+
+{
+  "customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+### 7. ACTION - Calling the client status update action
+POST http://localhost:4004/admin/updateCustomerStatus
+Authorization: Basic admin
+Content-Type: application/json
+
+{
+  "customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 8. DELETE - Deleting a client from the database
+# Since you have a hard link (Composition) configured, 
+# deleting a client will automatically delete all their feedbacks.
+DELETE http://localhost:4004/admin/Customers(33333333-3333-3333-3333-333333333333)
+Authorization: Basic admin

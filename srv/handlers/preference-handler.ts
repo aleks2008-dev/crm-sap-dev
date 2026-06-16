@@ -16,16 +16,16 @@ export default async function (this: any) {
     this.on('analyzePreferences', async (req: any) => {
         const { customerID } = req.data;
 
-        const orders = await SELECT.from(Interaction).where({ customer_ID: customerID, method: 'Order' });
+        const orders = await SELECT.from(Interaction).where({ customer_customerID: customerID, method: 'Order' });
 
         const categories = extractProductCategories(orders);
 
         for (const category of categories) {
             await INSERT.into(Preference).entries({
                 productCategory: category,
-                customer_ID: customerID,
+                customer_customerID: customerID,
                 notes: 'Auto-detected from purchase history'
             });
         }
     });
-} 
+}

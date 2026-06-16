@@ -1,0 +1,49 @@
+### 1. GET - all customers.
+GET http://localhost:4004/sales/Customers
+Authorization: Basic sales
+
+###
+
+### 2. GET - one customer by ID.
+GET http://localhost:4004/sales/Customers(33333333-3333-3333-3333-333333333333)
+Authorization: Basic sales
+
+###
+
+### 3. POST - add one interaction for this customer.
+POST http://localhost:4004/sales/Interactions
+Authorization: Basic sales
+Content-Type: application/json
+
+{
+  "interactionID": "99999999-9999-9999-9999-999999999999",
+  "date": "2026-06-15T12:00:00Z",
+  "method": "Order",
+  "summary": "Bought a business device",
+  "description": "The client has purchased a new brand laptop for work.",
+  "customer_customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 4. ACTION - analyzePreferences.
+POST http://localhost:4004/sales/analyzePreferences
+Authorization: Basic sales
+Content-Type: application/json
+
+{
+  "customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 5. GET - check the result change preferences
+GET http://localhost:4004/sales/Preferences
+Authorization: Basic sales
+
+###
+
+### 6. NEGATIVE TEST - Sales manager attempts to access the admin service
+### result 403 Forbidden. The custom CAP bouncer will not allow the sales user to access the admin panel.
+GET http://localhost:4004/admin/Customers
+Authorization: Basic sales

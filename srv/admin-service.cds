@@ -1,7 +1,7 @@
 using { crm as db } from '../db/schema';
 
 @requires: 'CRM-Admin'
-service AdminService @(odata:'/admin') {
+service AdminService @(odata:'/admin', impl: './handlers/customer-handler') {
     entity Customers as projection on db.Customer;
     entity Interactions as projection on db.Interaction;
     entity Preferences as projection on db.Preference;
