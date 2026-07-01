@@ -1,0 +1,9 @@
+COLUMN TABLE crm_MarketingCampaign (
+  campaignID NVARCHAR(36) NOT NULL,
+  name NVARCHAR(100),
+  startDate DATE,
+  endDate DATE,
+  description NVARCHAR(500),
+  customer_customerID NVARCHAR(36),
+  PRIMARY KEY(campaignID)
+)

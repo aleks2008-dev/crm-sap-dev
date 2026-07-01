@@ -1,0 +1,8 @@
+VIEW SalesService_Interactions AS SELECT
+  Interaction_0.interactionID,
+  Interaction_0."DATE",
+  Interaction_0.method,
+  Interaction_0.summary,
+  Interaction_0.description,
+  Interaction_0.customer_customerID
+FROM crm_Interaction AS Interaction_0

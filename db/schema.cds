@@ -59,7 +59,7 @@ entity MarketingCampaign {
     startDate : Date;
     endDate : Date;
     description : String (500);
-    customer : Association to many Customer;
+    customer : Association to crm.Customer;
 }
 
 entity LoyaltyProgram {

@@ -1,0 +1,35 @@
+{
+  "format_version": 1,
+  "imports": [
+    {
+      "target_table": "CRM_LOYALTYPROGRAM",
+      "source_data": {
+        "data_type": "CSV",
+        "file_name": "crm-LoyaltyProgram.csv",
+        "has_header": true,
+        "type_config": {
+          "delimiter": ","
+        }
+      },
+      "import_settings": {
+        "import_columns": [
+          "LOYALTYPROGRAMID",
+          "PROGRAMNAME",
+          "POINTSEARNED",
+          "POINTSREDEEMED",
+          "TIERLEVEL",
+          "CUSTOMER_CUSTOMERID"
+        ],
+        "include_filter": []
+      },
+      "column_mappings": {
+        "LOYALTYPROGRAMID": "loyaltyProgramID",
+        "PROGRAMNAME": "programName",
+        "POINTSEARNED": "pointsEarned",
+        "POINTSREDEEMED": "pointsRedeemed",
+        "TIERLEVEL": "tierLevel",
+        "CUSTOMER_CUSTOMERID": "customer_customerID"
+      }
+    }
+  ]
+}

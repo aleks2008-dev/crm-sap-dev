@@ -1,0 +1,7 @@
+COLUMN TABLE crm_Preference (
+  preferenceID NVARCHAR(36) NOT NULL,
+  productCategory NVARCHAR(50),
+  notes NVARCHAR(200),
+  customer_customerID NVARCHAR(36),
+  PRIMARY KEY(preferenceID)
+)

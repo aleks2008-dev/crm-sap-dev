@@ -1,0 +1,9 @@
+COLUMN TABLE crm_LoyaltyProgram (
+  loyaltyProgramID NVARCHAR(36) NOT NULL,
+  programName NVARCHAR(50),
+  pointsEarned INTEGER,
+  pointsRedeemed INTEGER,
+  tierLevel NVARCHAR(20),
+  customer_customerID NVARCHAR(36),
+  PRIMARY KEY(loyaltyProgramID)
+)

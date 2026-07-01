@@ -4,7 +4,7 @@ Authorization: Basic admin
 Content-Type: application/json
 
 {
-  "customerID": "33333333-3333-3333-3333-333333333333",
+  "customerID": "13333333-3333-3333-3333-333333333333",
   "firstName": "Alex",
   "lastName": "Brown",
   "email": "alex.brown@example.com",
@@ -90,3 +90,26 @@ Content-Type: application/json
 # deleting a client will automatically delete all their feedbacks.
 DELETE http://localhost:4004/admin/Customers(33333333-3333-3333-3333-333333333333)
 Authorization: Basic admin
+
+
+###
+### Запрос правильного токена у XSUAA
+### Запрос токена с правильным субдоменом аккаунта
+POST https://f0a4dd9etrial.authentication.us10.hana.ondemand.com/oauth/token
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic sb-crm_sap_dev!t665703:9916ad8f-5f91-41c4-b256-2c03f6cab03f$iw9ZdmM7PSTgNHv7g25CTnWr6G_LpiXuECU_wcUmjTA=
+
+grant_type=client_credentials
+###
+###
+GET http://localhost:4004/admin/Customers
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJqaWQiOiI3L3E1N3NXbHBFUEowVDFoNG8ya3hGK2NhZWFlVDBQNTZOQVdLRm1JMTRVPSIsImFsZyI6IlJTMjU2Iiwiamt1IjoiaHR0cHM6Ly9mMGE0ZGQ5ZXRyaWFsLmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vdG9rZW5fa2V5cyIsImtpZCI6ImRlZmF1bHQtand0LWtleS1jM2JmMTliM2I2In0.eyJzdWIiOiJzYi1jcm1fc2FwX2RldiF0NjY1NzAzIiwiaXNzIjoiaHR0cHM6Ly9mMGE0ZGQ5ZXRyaWFsLmF1dGhlbnRpY2F0aW9uLnVzMTAuaGFuYS5vbmRlbWFuZC5jb20vb2F1dGgvdG9rZW4iLCJhdXRob3JpdGllcyI6WyJ1YWEucmVzb3VyY2UiXSwiY2xpZW50X2lkIjoic2ItY3JtX3NhcF9kZXYhdDY2NTcwMyIsImF1ZCI6WyJ1YWEiLCJzYi1jcm1fc2FwX2RldiF0NjY1NzAzIl0sImV4dF9hdHRyIjp7ImVuaGFuY2VyIjoiWFNVQUEiLCJzdWJhY2NvdW50aWQiOiI2NzQyNDljMy1hN2EwLTQ5NjEtOTAwMC0yMzIzYzhiNGJhZDIiLCJ6ZG4iOiJmMGE0ZGQ5ZXRyaWFsIn0sInppZCI6IjY3NDI0OWMzLWE3YTAtNDk2MS05MDAwLTIzMjNjOGI0YmFkMiIsImdyYW50X3R5cGUiOiJjbGllbnRfY3JlZGVudGlhbHMiLCJhenAiOiJzYi1jcm1fc2FwX2RldiF0NjY1NzAzIiwic2NvcGUiOlsidWFhLnJlc291cmNlIl0sImV4cCI6MTc4Mjc2NzE0MSwiaWF0IjoxNzgyNzIzOTQxLCJqdGkiOiI2MzRjN2VlZDMxOGU0NDlkYTY0MDRlMjE0NmZlYTMxYiIsInJldl9zaWciOiJhZDFkOTkwIiwiY2lkIjoic2ItY3JtX3NhcF9kZXYhdDY2NTcwMyJ9.ZA88i8ZeFzbmV6dacMamvGH3Xos_ujzwbD8gJwKnrtbpg35Q9BAumTaMZriOejo6u3dUr9hCyopnoEGA0byO_Hc0_dolhokURE17VtowyM9zs8xLe22vgRoFInRzVx6Kus2zV9YO1t2lgl0yyyjwDxpVta4tCE84EUmvlPkB0HgqzL7UPZLXI4af4dstwbWjZpXnHX1MwX0DyyZf4QA8XDQb_X0H7FpGgXz14WpjHNNR2rSabAoUteEVcPclxuI7uZujcmYH6e815nFE7fmfxXmPjHmD0LkbkfYmuQEBbEVwivVq_mGvjOkdj4Q6S6Go-hQDNA2-SGN0ZzdJ_x36fg
+
+### Запрос JWT токена реального бизнес-пользователя
+POST https://f0a4dd9etrial.authentication.us10.hana.ondemand.com/oauth/token
+Content-Type: application/x-www-form-urlencoded
+Authorization: Basic sb-crm_sap_dev!t665703:9916ad8f-5f91-41c4-b256-2c03f6cab03f$iw9ZdmM7PSTgNHv7g25CTnWr6G_LpiXuECU_wcUmjTA=
+
+grant_type=password
+&username=aleksandr.stepkov@innowise.com
+&password=Shathththa2)

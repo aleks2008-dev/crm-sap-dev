@@ -19,3 +19,5 @@ credentials.json
 # Logs & temp
 *.log
 .gen/
+# added by cds
+.cdsrc-private.json

@@ -1,0 +1,19 @@
+{
+    "xsappname": "crm_sap_dev",
+    "tenant-mode": "shared",
+    "scopes": [
+      {
+        "name": "$XSAPPNAME.CRMAdminScope",
+        "description": "CRM Admin Scope"
+      }
+    ],
+    "role-templates": [
+      {
+        "name": "CRM-Admin",
+        "description": "CRM Admin Role",
+        "scope-references": [
+          "$XSAPPNAME.CRMAdminScope"
+        ]
+      }
+    ]
+  }

@@ -1,0 +1,8 @@
+COLUMN TABLE crm_CustomerNote (
+  noteID NVARCHAR(36) NOT NULL,
+  content NVARCHAR(1000),
+  authorID NVARCHAR(50),
+  "DATE" SECONDDATE,
+  customer_customerID NVARCHAR(36),
+  PRIMARY KEY(noteID)
+)

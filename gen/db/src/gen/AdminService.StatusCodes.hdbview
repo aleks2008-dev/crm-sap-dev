@@ -1,0 +1,5 @@
+VIEW AdminService_StatusCodes AS SELECT
+  CustomerStatusCode_0.code,
+  CustomerStatusCode_0.description,
+  CustomerStatusCode_0.colorCode
+FROM crm_CustomerStatusCode AS CustomerStatusCode_0

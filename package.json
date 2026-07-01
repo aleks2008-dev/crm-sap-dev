@@ -1,10 +1,24 @@
 {
+  "name": "crm_sap_dev",
+  "version": "1.0.0",
+  "description": "CRM SAP Project",
+  "repository": "mock-repo",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "cds-serve",
+    "test": "jest --runInBand --detectOpenHandles"
+  },
   "devDependencies": {
+    "@cap-js/cds-test": "^1.0.1",
     "@cap-js/cds-typer": ">=0.1",
     "@cap-js/cds-types": "^0.16.0",
     "@cap-js/sqlite": "^2.4.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
+    "jest": "^30.4.2",
     "sqlite3": "^6.0.1",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.11",
     "tsx": "^4",
     "typescript": "^5.4.5"
   },
@@ -41,8 +55,14 @@
               ]
             }
           }
+        },
+        "[production]": {
+          "kind": "xsuaa"
         }
       }
     }
+  },
+  "dependencies": {
+    "@cap-js/hana": "^2"
   }
 }

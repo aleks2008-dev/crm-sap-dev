@@ -1,0 +1,7 @@
+VIEW SalesService_Feedbacks AS SELECT
+  Feedback_0.feedbackID,
+  Feedback_0.rating,
+  Feedback_0.comments,
+  Feedback_0.feedbackDate,
+  Feedback_0.customer_customerID
+FROM crm_Feedback AS Feedback_0

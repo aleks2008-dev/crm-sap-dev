@@ -1,0 +1,9 @@
+VIEW AdminService_Customers AS SELECT
+  Customer_0.customerID,
+  Customer_0.firstName,
+  Customer_0.lastName,
+  Customer_0.email,
+  Customer_0.phone,
+  Customer_0.statusCode_code,
+  Customer_0.averageRating
+FROM crm_Customer AS Customer_0
