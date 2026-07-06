@@ -15,14 +15,16 @@
         "import_columns": [
           "CODE",
           "DESCRIPTION",
-          "COLORCODE"
+          "COLORCODE",
+          "CRITICALITY"
         ],
         "include_filter": []
       },
       "column_mappings": {
         "CODE": "code",
         "DESCRIPTION": "description",
-        "COLORCODE": "colorCode"
+        "COLORCODE": "colorCode",
+        "CRITICALITY": "criticality"
       }
     }
   ]

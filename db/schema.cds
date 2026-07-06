@@ -5,6 +5,7 @@ entity CustomerStatusCode {
     key code : String(20);
     description : String (100);
     colorCode : String(7);
+    criticality : Integer;
 }
 
 entity Customer {
@@ -69,4 +70,9 @@ entity LoyaltyProgram {
     pointsRedeemed : Integer;
     tierLevel : String(20);
     customer : Association to Customer;
+}
+
+entity ProductCategory {
+    key code : String(50);
+    description : String(100);
 }

@@ -18,6 +18,10 @@ credentials.json
 
 # Logs & temp
 *.log
-.gen/
+gen/
 # added by cds
 .cdsrc-private.json
+
+# CF CLI
+cf-cli.tgz
+cf@
