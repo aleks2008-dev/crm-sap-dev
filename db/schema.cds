@@ -16,10 +16,12 @@ entity Customer {
     phone : String(20);
     statusCode : Association to CustomerStatusCode;
     averageRating : Decimal(3,2);
+    categoryGroup : String(50);
 
     interactions: Composition of many Interaction on interactions.customer = $self;
     preferences: Association to many Preference on preferences.customer = $self;
     feedbacks: Composition of many Feedback on feedbacks.customer = $self;
+    tags: Association to many CustomerTags on tags.customer = $self;
 }
 
 entity Preference {
@@ -40,6 +42,7 @@ entity Feedback {
 entity Interaction {
     key interactionID : UUID;
     date : DateTime;
+    type : String(20);
     method : String(30);
     summary : String(200);
     description : String(1000);
@@ -54,13 +57,32 @@ entity CustomerNote {
     customer : Association to Customer;
 }
 
+entity CustomerTag {
+    key tagID : UUID;
+    label : String(50);
+    color : String(7);
+    customers : Association to many CustomerTags on customers.tag = $self;
+}
+
+entity CustomerTags {
+    key ID       : UUID;
+    customer : Association to Customer;
+    tag      : Association to CustomerTag;
+}
+
 entity MarketingCampaign {
     key campaignID : UUID;
     name : String (100);
     startDate : Date;
     endDate : Date;
     description : String (500);
-    customer : Association to crm.Customer;
+    customers : Association to many CustomerCampaigns on customers.campaign = $self;
+}
+
+entity CustomerCampaigns {
+    key ID        : UUID;
+    customer  : Association to Customer;
+    campaign  : Association to MarketingCampaign;
 }
 
 entity LoyaltyProgram {

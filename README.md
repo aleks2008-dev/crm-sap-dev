@@ -7,3 +7,4 @@
 5. Browser: http://localhost:4004
 for testing without JWT  "CDS_REQUIRES_AUTH_KIND=mocked cds watch --profile hybrid"
 "cds deploy --to hana"
+6. npm test    npm test -- --coverage

@@ -1,6 +1,7 @@
 VIEW SalesService_Interactions AS SELECT
   Interaction_0.interactionID,
   Interaction_0."DATE",
+  Interaction_0.type,
   Interaction_0.method,
   Interaction_0.summary,
   Interaction_0.description,

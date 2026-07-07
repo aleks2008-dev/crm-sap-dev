@@ -6,5 +6,6 @@ COLUMN TABLE crm_Customer (
   phone NVARCHAR(20),
   statusCode_code NVARCHAR(20),
   averageRating DECIMAL(3, 2),
+  categoryGroup NVARCHAR(50),
   PRIMARY KEY(customerID)
 )

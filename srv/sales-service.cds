@@ -11,7 +11,6 @@ service SalesService @(path: '/sales', impl: './handlers/preference-handler') {
     @readonly
     entity Preferences as projection on db.Preference;
 
-    @readonly
     entity Feedbacks as projection on db.Feedback;
 
     action analyzePreferences(customerID : UUID);

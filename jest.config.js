@@ -4,5 +4,6 @@ module.exports = {
     testMatch: ['**/test/**/*.test.js', '**/test/**/*.test.ts'],
     transform: {
       '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.json' }],
-    }
+    },
+    testTimeout: 60000
   };

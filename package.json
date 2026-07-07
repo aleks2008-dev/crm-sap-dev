@@ -41,21 +41,18 @@
         "[development]": {
           "kind": "dummy",
           "users": {
-            "admin": {
-              "roles": [
-                "CRM-Admin"
-              ]
-            },
-            "sales": {
-              "roles": [
-                "CRM-Sales"
-              ]
-            },
-            "support": {
-              "roles": [
-                "CRM-Support"
-              ]
-            }
+            "admin": { "roles": ["CRM-Admin"] },
+            "sales": { "roles": ["CRM-Sales"] },
+            "support": { "roles": ["CRM-Support"] }
+          }
+        },
+        "[hybrid]": {
+          "kind": "mocked",
+          "users": {
+            "admin": { "roles": ["CRM-Admin"] },
+            "sales": { "roles": ["CRM-Sales"] },
+            "support": { "roles": ["CRM-Support"] },
+            "*": { "roles": ["CRM-Admin"] }
           }
         },
         "[production]": {

@@ -5,5 +5,6 @@ VIEW SalesService_Customers AS SELECT
   Customer_0.email,
   Customer_0.phone,
   Customer_0.statusCode_code,
-  Customer_0.averageRating
+  Customer_0.averageRating,
+  Customer_0.categoryGroup
 FROM crm_Customer AS Customer_0

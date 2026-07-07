@@ -1,7 +1,6 @@
 const cds = require('@sap/cds');
 
 describe('CRM Sales Service Test Suite', () => {
-  // Инициализируем тестовую среду CAP для текущего проекта
   const { GET, POST, expect } = cds.test(__dirname + '/..');
 
   let customerId;
@@ -9,10 +8,8 @@ describe('CRM Sales Service Test Suite', () => {
   beforeAll(async () => {
     const { Customer } = cds.entities('crm');
 
-    // Генерируем уникальный UUID для тестового клиента
     customerId = cds.utils.uuid();
 
-    // Наполняем базу данных начальными тестовыми данными
     await INSERT.into(Customer).entries([
       {
         customerID: customerId,
@@ -27,26 +24,27 @@ describe('CRM Sales Service Test Suite', () => {
   describe('Entity Operations & Authorizations', () => {
     test('GET /sales/Customers - Should fetch customers list (Readonly check)', async () => {
       const response = await GET('/sales/Customers');
-      expect(response.status).to.equal(200);
-      expect(response.data.value).to.be.an('array');
-      
+      expect(response.status).toBe(200);
+      expect(Array.isArray(response.data.value)).toBe(true);
+
       const testCustomer = response.data.value.find(c => c.customerID === customerId);
-      expect(testCustomer).to.exist;
-      expect(testCustomer.firstName).to.equal('Alex');
+      expect(testCustomer).toBeDefined();
+      expect(testCustomer.firstName).toBe('Alex');
     });
 
     test('POST /sales/Customers - Should block creation since entity is @readonly', async () => {
+      let error;
       try {
         await POST('/sales/Customers', {
           customerID: cds.utils.uuid(),
           firstName: 'Unauthorized',
           lastName: 'User'
         });
-        expect.fail('Should not allow POST on a readonly entity');
       } catch (err) {
-        // Ожидаем ошибку 403 Forbidden или 405 Method Not Allowed из-за @readonly
-        expect(err.response.status).to.be.oneOf([403, 405]);
+        error = err;
       }
+      expect(error).toBeDefined();
+      expect([403, 405]).toContain(error.response.status);
     });
   });
 
@@ -54,7 +52,6 @@ describe('CRM Sales Service Test Suite', () => {
     test('POST /sales/analyzePreferences - Should automatically detect categories from orders', async () => {
       const { Interaction, Preference } = cds.entities('crm');
 
-      // 1. Создаем интеракции с типом 'Order', содержащие ключевые слова в описании/теме
       await INSERT.into(Interaction).entries([
         {
           interactionID: cds.utils.uuid(),
@@ -72,30 +69,22 @@ describe('CRM Sales Service Test Suite', () => {
         },
         {
           interactionID: cds.utils.uuid(),
-          method: 'Call', // Метод не 'Order', должен игнорироваться парсером
+          method: 'Call',
           summary: 'Phone inquiry regarding shipment status',
           customer_customerID: customerId
         }
       ]);
 
-      // 2. Вызываем кастомное действие analyzePreferences через SalesService API
       const response = await POST('/sales/analyzePreferences', { customerID: customerId });
-      
-      // Согласно спецификации handler'а, действие выполняет INSERT и завершается (status 204 No Content или 200)
-      expect(response.status).to.be.oneOf([200, 204]);
+      expect([200, 204]).toContain(response.status);
 
-      // 3. Проверяем, что в базе данных создались правильные предпочтения
       const preferences = await SELECT.from(Preference).where({ customer_customerID: customerId });
-      
-      // Ожидаем ровно 2 категории ('Smartphones' и 'Laptops')
-      expect(preferences.length).to.equal(2);
+      expect(preferences.length).toBe(2);
 
       const productCategories = preferences.map(p => p.productCategory);
-      expect(productCategories).to.include('Smartphones');
-      expect(productCategories).to.include('Laptops');
-
-      // Проверяем автоматическую подпись обработчика
-      expect(preferences[0].notes).to.equal('Auto-detected from purchase history');
+      expect(productCategories).toContain('Smartphones');
+      expect(productCategories).toContain('Laptops');
+      expect(preferences[0].notes).toBe('Auto-detected from purchase history');
     });
   });
 });
