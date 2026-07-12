@@ -1,0 +1,10 @@
+COLUMN TABLE crm_Interaction (
+  interactionID NVARCHAR(36) NOT NULL,
+  "DATE" SECONDDATE,
+  type NVARCHAR(20),
+  method NVARCHAR(30),
+  summary NVARCHAR(200),
+  description NVARCHAR(1000),
+  customer_customerID NVARCHAR(36),
+  PRIMARY KEY(interactionID)
+)

@@ -1,0 +1,31 @@
+{
+  "format_version": 1,
+  "imports": [
+    {
+      "target_table": "CRM_PREFERENCE",
+      "source_data": {
+        "data_type": "CSV",
+        "file_name": "crm-Preference.csv",
+        "has_header": true,
+        "type_config": {
+          "delimiter": ","
+        }
+      },
+      "import_settings": {
+        "import_columns": [
+          "PREFERENCEID",
+          "PRODUCTCATEGORY",
+          "NOTES",
+          "CUSTOMER_CUSTOMERID"
+        ],
+        "include_filter": []
+      },
+      "column_mappings": {
+        "PREFERENCEID": "preferenceID",
+        "PRODUCTCATEGORY": "productCategory",
+        "NOTES": "notes",
+        "CUSTOMER_CUSTOMERID": "customer_customerID"
+      }
+    }
+  ]
+}

@@ -1,12 +1,75 @@
 {
+  "name": "crm_sap_dev",
+  "version": "1.0.0",
+  "description": "CRM SAP Project",
+  "repository": "mock-repo",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "cds-serve",
+    "test": "jest --runInBand --detectOpenHandles",
+    "watch-projectcrm": "cds watch --open crm.projectcrm/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
   "devDependencies": {
+    "@cap-js/cds-test": "^1.0.1",
+    "@cap-js/cds-typer": ">=0.1",
     "@cap-js/cds-types": "^0.16.0",
+    "@cap-js/sqlite": "^2.4.0",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
+    "cds-plugin-ui5": "^0.17.0",
+    "jest": "^30.4.2",
+    "sqlite3": "^6.0.1",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.11",
     "tsx": "^4",
-    "typescript": "^6.0.0",
-    "@cap-js/cds-typer": ">=0.1"
+    "typescript": "^5.4.5"
   },
   "imports": {
     "#cds-models/*": "./@cds-models/*/index.js"
-  }
+  },
+  "cds": {
+    "requires": {
+      "db": {
+        "[development]": {
+          "kind": "sqlite",
+          "credentials": {
+            "url": ":memory:"
+          }
+        }
+      },
+      "auth": {
+        "[development]": {
+          "kind": "dummy",
+          "users": {
+            "admin": { "roles": ["CRM-Admin"] },
+            "sales": { "roles": ["CRM-Sales"] },
+            "support": { "roles": ["CRM-Support"] }
+          }
+        },
+        "[hybrid]": {
+          "kind": "mocked",
+          "users": {
+            "admin": { "roles": ["CRM-Admin"] },
+            "sales": { "roles": ["CRM-Sales"] },
+            "support": { "roles": ["CRM-Support"] },
+            "*": { "roles": ["CRM-Admin"] }
+          }
+        },
+        "[production]": {
+          "kind": "xsuaa"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "@cap-js/hana": "^2",
+    "@sap/cds": "^10.0.3",
+    "@sap/xssec": "^4.13.1"
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/projectcrm"
+  ]
 }

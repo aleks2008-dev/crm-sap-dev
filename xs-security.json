@@ -1,0 +1,35 @@
+{
+  "xsappname": "crm_sap_dev",
+  "tenant-mode": "shared",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.CRMAdminScope",
+      "description": "CRM Admin Scope"
+    },
+    {
+      "name": "$XSAPPNAME.CRMSalesScope",
+      "description": "CRM Sales Scope"
+    },
+    {
+      "name": "$XSAPPNAME.CRMSupportScope",
+      "description": "CRM Support Scope"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "CRM-Admin",
+      "description": "Full access",
+      "scope-references": ["$XSAPPNAME.CRMAdminScope"]
+    },
+    {
+      "name": "CRM-Sales",
+      "description": "View and update customers, log interactions",
+      "scope-references": ["$XSAPPNAME.CRMSalesScope"]
+    },
+    {
+      "name": "CRM-Support",
+      "description": "Read-only access",
+      "scope-references": ["$XSAPPNAME.CRMSupportScope"]
+    }
+  ]
+}

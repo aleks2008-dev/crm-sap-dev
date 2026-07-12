@@ -1,0 +1,190 @@
+# =============================================================================
+# SALES SERVICE — Full Functionality Demo
+# Base URL: http://localhost:4004
+# Auth:     sales / (empty password)  →  Basic c2FsZXM6
+# Run:      CDS_REQUIRES_AUTH_KIND=mocked cds watch --profile hybrid
+# =============================================================================
+
+
+# -----------------------------------------------------------------------------
+# SECTION 1 — Read Customers (read-only in SalesService)
+# -----------------------------------------------------------------------------
+
+### 1.1 GET - List all customers
+GET http://localhost:4004/sales/Customers
+Authorization: Basic c2FsZXM6
+
+###
+
+### 1.2 GET - Get a specific customer by ID
+GET http://localhost:4004/sales/Customers(33333333-3333-3333-3333-333333333333)
+Authorization: Basic c2FsZXM6
+
+###
+
+### 1.3 NEGATIVE TEST - Sales user attempts to create a customer → 405 Method Not Allowed
+POST http://localhost:4004/sales/Customers
+Authorization: Basic c2FsZXM6
+Content-Type: application/json
+
+{
+  "customerID": "ffffffff-ffff-ffff-ffff-ffffffffffff",
+  "firstName": "Unauthorized",
+  "lastName": "User"
+}
+
+
+# -----------------------------------------------------------------------------
+# SECTION 2 — Feedbacks (writable in SalesService)
+# NOTE: Creating feedback here also triggers the auto-log Interaction hook
+#       in customer-handler.ts (after CREATE Feedbacks → INSERT Interaction)
+# -----------------------------------------------------------------------------
+
+### 2.1 POST - Add first feedback for Alex Brown (rating 5)
+# After creation, an Interaction of type "Feedback" is auto-logged
+POST http://localhost:4004/sales/Feedbacks
+Authorization: Basic c2FsZXM6
+Content-Type: application/json
+
+{
+  "feedbackID": "a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1",
+  "rating": 5,
+  "comments": "Excellent service and fast delivery!",
+  "feedbackDate": "2026-07-01T10:00:00Z",
+  "customer_customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 2.2 POST - Add second feedback for Alex Brown (rating 3)
+POST http://localhost:4004/sales/Feedbacks
+Authorization: Basic c2FsZXM6
+Content-Type: application/json
+
+{
+  "feedbackID": "b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+  "rating": 3,
+  "comments": "Product is fine, but the packaging was damaged.",
+  "feedbackDate": "2026-07-02T12:00:00Z",
+  "customer_customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 2.3 POST - Add feedback for Emma Watson (rating 2 — keeps her At-Risk)
+POST http://localhost:4004/sales/Feedbacks
+Authorization: Basic c2FsZXM6
+Content-Type: application/json
+
+{
+  "feedbackID": "c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3",
+  "rating": 2,
+  "comments": "Delivery was very late, not satisfied.",
+  "feedbackDate": "2026-07-03T09:00:00Z",
+  "customer_customerID": "44444444-4444-4444-4444-444444444444"
+}
+
+###
+
+### 2.4 GET - Verify feedbacks were created
+GET http://localhost:4004/sales/Feedbacks
+Authorization: Basic c2FsZXM6
+
+
+# -----------------------------------------------------------------------------
+# SECTION 3 — Interactions (writable in SalesService)
+# -----------------------------------------------------------------------------
+
+### 3.1 POST - Log a phone call interaction
+POST http://localhost:4004/sales/Interactions
+Authorization: Basic c2FsZXM6
+Content-Type: application/json
+
+{
+  "interactionID": "11111111-aaaa-aaaa-aaaa-111111111111",
+  "date": "2026-07-05T10:00:00Z",
+  "type": "Call",
+  "method": "Call",
+  "summary": "Discussed upcoming product launch",
+  "description": "Customer is interested in the new tablet lineup.",
+  "customer_customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 3.2 POST - Log an Order interaction (used by analyzePreferences)
+POST http://localhost:4004/sales/Interactions
+Authorization: Basic c2FsZXM6
+Content-Type: application/json
+
+{
+  "interactionID": "22222222-bbbb-bbbb-bbbb-222222222222",
+  "date": "2026-07-06T14:00:00Z",
+  "type": "Order",
+  "method": "Order",
+  "summary": "Purchased a new smartphone",
+  "description": "Customer ordered the latest iOS phone model.",
+  "customer_customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 3.3 POST - Log a second Order interaction (laptop)
+POST http://localhost:4004/sales/Interactions
+Authorization: Basic c2FsZXM6
+Content-Type: application/json
+
+{
+  "interactionID": "33333333-cccc-cccc-cccc-333333333333",
+  "date": "2026-07-07T11:00:00Z",
+  "type": "Order",
+  "method": "Order",
+  "summary": "Ordered a developer laptop",
+  "description": "Customer upgraded to a high-performance laptop for development.",
+  "customer_customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 3.4 GET - Verify auto-logged Feedback interactions (created by the hook in customer-handler.ts)
+# After Section 2 feedback creation, interactions with method="Feedback" should appear here
+GET http://localhost:4004/sales/Interactions
+Authorization: Basic c2FsZXM6
+
+
+# -----------------------------------------------------------------------------
+# SECTION 4 — Action: analyzePreferences
+# Detects product categories from Order interactions and saves as Preferences
+# Run Section 3.2 and 3.3 first to have Order interactions in the database
+# -----------------------------------------------------------------------------
+
+### 4.1 ACTION - Analyze preferences for Alex Brown
+# Expected: creates Preferences for "Smartphones" and "Laptops"
+POST http://localhost:4004/sales/analyzePreferences
+Authorization: Basic c2FsZXM6
+Content-Type: application/json
+
+{
+  "customerID": "33333333-3333-3333-3333-333333333333"
+}
+
+###
+
+### 4.2 GET - Verify detected preferences
+GET http://localhost:4004/sales/Preferences
+Authorization: Basic c2FsZXM6
+
+
+# -----------------------------------------------------------------------------
+# SECTION 5 — Authorization: negative tests
+# -----------------------------------------------------------------------------
+
+### 5.1 NEGATIVE TEST - Sales user tries to access AdminService → 403 Forbidden
+GET http://localhost:4004/admin/Customers
+Authorization: Basic c2FsZXM6
+
+###
+
+### 5.2 NEGATIVE TEST - Sales user tries to access SupportService → 403 Forbidden
+GET http://localhost:4004/support/Customers
+Authorization: Basic c2FsZXM6

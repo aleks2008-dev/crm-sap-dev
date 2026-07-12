@@ -1,0 +1,33 @@
+{
+  "format_version": 1,
+  "imports": [
+    {
+      "target_table": "CRM_MARKETINGCAMPAIGN",
+      "source_data": {
+        "data_type": "CSV",
+        "file_name": "crm-MarketingCampaign.csv",
+        "has_header": true,
+        "type_config": {
+          "delimiter": ","
+        }
+      },
+      "import_settings": {
+        "import_columns": [
+          "CAMPAIGNID",
+          "NAME",
+          "STARTDATE",
+          "ENDDATE",
+          "DESCRIPTION"
+        ],
+        "include_filter": []
+      },
+      "column_mappings": {
+        "CAMPAIGNID": "campaignID",
+        "NAME": "name",
+        "STARTDATE": "startDate",
+        "ENDDATE": "endDate",
+        "DESCRIPTION": "description"
+      }
+    }
+  ]
+}

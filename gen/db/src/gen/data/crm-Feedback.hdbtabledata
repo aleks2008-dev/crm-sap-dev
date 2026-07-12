@@ -1,0 +1,33 @@
+{
+  "format_version": 1,
+  "imports": [
+    {
+      "target_table": "CRM_FEEDBACK",
+      "source_data": {
+        "data_type": "CSV",
+        "file_name": "crm-Feedback.csv",
+        "has_header": true,
+        "type_config": {
+          "delimiter": ","
+        }
+      },
+      "import_settings": {
+        "import_columns": [
+          "FEEDBACKID",
+          "RATING",
+          "COMMENTS",
+          "FEEDBACKDATE",
+          "CUSTOMER_CUSTOMERID"
+        ],
+        "include_filter": []
+      },
+      "column_mappings": {
+        "FEEDBACKID": "feedbackID",
+        "RATING": "rating",
+        "COMMENTS": "comments",
+        "FEEDBACKDATE": "feedbackDate",
+        "CUSTOMER_CUSTOMERID": "customer_customerID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+COLUMN TABLE crm_Customer (
+  customerID NVARCHAR(36) NOT NULL,
+  firstName NVARCHAR(50),
+  lastName NVARCHAR(50),
+  email NVARCHAR(100),
+  phone NVARCHAR(20),
+  statusCode_code NVARCHAR(20),
+  averageRating DECIMAL(3, 2),
+  categoryGroup NVARCHAR(50),
+  PRIMARY KEY(customerID)
+)
