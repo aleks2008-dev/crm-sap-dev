@@ -85,10 +85,6 @@
           "autoExpandSelect": true,
           "earlyRequests": true
         }
-      },
-      "@i18n": {
-        "type": "sap.ui.model.resource.ResourceModel",
-        "uri": "i18n/i18n.properties"
       }
     },
     "resources": {
@@ -115,19 +111,12 @@
           "name": "sap.fe.templates.ListReport",
           "options": {
             "settings": {
-              "contextPath": "/Customers",
+              "entitySet": "Customers",
               "variantManagement": "Page",
               "navigation": {
                 "Customers": {
                   "detail": {
                     "route": "CustomersObjectPage"
-                  }
-                }
-              },
-              "controlConfiguration": {
-                "@com.sap.vocabularies.UI.v1.LineItem": {
-                  "tableSettings": {
-                    "type": "ResponsiveTable"
                   }
                 }
               }
@@ -140,21 +129,15 @@
           "name": "sap.fe.templates.ObjectPage",
           "options": {
             "settings": {
-              "editableHeaderContent": false,
-              "contextPath": "/Customers"
+              "entitySet": "Customers"
             }
           }
         }
       }
     }
   },
-  "sap.fiori": {
-    "registrationIds": [],
-    "archeType": "transactional"
-  },
-  "sap.fe": {
-    "app": {
-      "enableLazyLoading": true
-    }
+  "sap.cloud": {
+    "public": true,
+    "service": "crm_sap_dev"
   }
 }

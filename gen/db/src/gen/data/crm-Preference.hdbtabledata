@@ -13,16 +13,16 @@
       },
       "import_settings": {
         "import_columns": [
-          "PREFERENCEID",
-          "PRODUCTCATEGORY",
+          "ID",
+          "PRODUCTCATEGORY_CODE",
           "NOTES",
           "CUSTOMER_CUSTOMERID"
         ],
         "include_filter": []
       },
       "column_mappings": {
-        "PREFERENCEID": "preferenceID",
-        "PRODUCTCATEGORY": "productCategory",
+        "ID": "ID",
+        "PRODUCTCATEGORY_CODE": "productCategory_code",
         "NOTES": "notes",
         "CUSTOMER_CUSTOMERID": "customer_customerID"
       }

@@ -13,8 +13,9 @@
       },
       "import_settings": {
         "import_columns": [
-          "INTERACTIONID",
+          "ID",
           "DATE",
+          "INTERACTIONTYPE_CODE",
           "METHOD",
           "SUMMARY",
           "DESCRIPTION",
@@ -23,8 +24,9 @@
         "include_filter": []
       },
       "column_mappings": {
-        "INTERACTIONID": "interactionID",
+        "ID": "ID",
         "DATE": "date",
+        "INTERACTIONTYPE_CODE": "interactionType_code",
         "METHOD": "method",
         "SUMMARY": "summary",
         "DESCRIPTION": "description",

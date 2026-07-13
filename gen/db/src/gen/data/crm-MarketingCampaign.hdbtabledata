@@ -13,7 +13,7 @@
       },
       "import_settings": {
         "import_columns": [
-          "CAMPAIGNID",
+          "ID",
           "NAME",
           "STARTDATE",
           "ENDDATE",
@@ -22,7 +22,7 @@
         "include_filter": []
       },
       "column_mappings": {
-        "CAMPAIGNID": "campaignID",
+        "ID": "ID",
         "NAME": "name",
         "STARTDATE": "startDate",
         "ENDDATE": "endDate",

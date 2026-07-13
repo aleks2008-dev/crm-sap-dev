@@ -1,8 +1,8 @@
 COLUMN TABLE crm_Feedback (
-  feedbackID NVARCHAR(36) NOT NULL,
+  ID NVARCHAR(36) NOT NULL,
   rating INTEGER,
   comments NVARCHAR(500),
   feedbackDate SECONDDATE,
   customer_customerID NVARCHAR(36),
-  PRIMARY KEY(feedbackID)
+  PRIMARY KEY(ID)
 )

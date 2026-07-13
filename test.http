@@ -7,6 +7,52 @@
 
 
 # -----------------------------------------------------------------------------
+# SECTION 0 — Seed Data (run once if test customers don't exist in HANA)
+# -----------------------------------------------------------------------------
+
+### 0.1 POST - Create seed customer Alex Brown (Active)
+POST http://localhost:4004/admin/Customers
+Authorization: Basic YWRtaW46
+Content-Type: application/json
+
+{
+  "customerID": "33333333-3333-3333-3333-333333333333",
+  "firstName": "Alex",
+  "lastName": "Brown",
+  "email": "alex.brown@example.com",
+  "phone": "+79990001122",
+  "statusCode_code": "Active",
+  "averageRating": 0.00
+}
+
+###
+
+### 0.2 POST - Activate Alex Brown draft
+POST http://localhost:4004/admin/Customers(33333333-3333-3333-3333-333333333333)/AdminService.draftActivate
+Authorization: Basic YWRtaW46
+Content-Type: application/json
+
+{}
+
+###
+
+### 0.3 POST - Create seed customer Emma Watson (At-Risk)
+POST http://localhost:4004/admin/Customers
+Authorization: Basic YWRtaW46
+Content-Type: application/json
+
+{
+  "customerID": "44444444-4444-4444-4444-444444444444",
+  "firstName": "Emma",
+  "lastName": "Watson",
+  "email": "emma.w@example.com",
+  "phone": "+1234567890",
+  "statusCode_code": "At-Risk",
+  "averageRating": 2.50
+}
+
+
+# -----------------------------------------------------------------------------
 # SECTION 1 — Customer Management (CRUD)
 # -----------------------------------------------------------------------------
 
@@ -17,7 +63,7 @@ Authorization: Basic YWRtaW46
 ###
 
 ### 1.2 GET - Get a specific customer by ID
-GET http://localhost:4004/admin/Customers(33333333-3333-3333-3333-333333333333)
+GET http://localhost:4004/admin/Customers(44444444-4444-4444-4444-444444444444)
 Authorization: Basic YWRtaW46
 
 ###
@@ -28,7 +74,6 @@ Authorization: Basic YWRtaW46
 Content-Type: application/json
 
 {
-  "customerID": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
   "firstName": "John",
   "lastName": "Doe",
   "email": "john.doe@example.com",
@@ -36,24 +81,6 @@ Content-Type: application/json
   "statusCode_code": "Active",
   "averageRating": 0.00
 }
-
-###
-
-### 1.4 PATCH - Update customer phone and last name
-PATCH http://localhost:4004/admin/Customers(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)
-Authorization: Basic YWRtaW46
-Content-Type: application/json
-
-{
-  "lastName": "Doe-Jr",
-  "phone": "+19876543210"
-}
-
-###
-
-### 1.5 DELETE - Delete a customer (cascades to Interactions and Feedbacks)
-DELETE http://localhost:4004/admin/Customers(aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa)
-Authorization: Basic YWRtaW46
 
 
 # -----------------------------------------------------------------------------
@@ -150,20 +177,6 @@ Authorization: Basic YWRtaW46
 
 ###
 
-### 5.2 POST - Add a note to a customer
-POST http://localhost:4004/admin/CustomerNotes
-Authorization: Basic YWRtaW46
-Content-Type: application/json
-
-{
-  "noteID": "n1111111-1111-1111-1111-111111111111",
-  "content": "Customer requested a product catalog to be sent by email.",
-  "authorID": "admin",
-  "date": "2026-07-07T09:00:00Z",
-  "customer_customerID": "33333333-3333-3333-3333-333333333333"
-}
-
-
 # -----------------------------------------------------------------------------
 # SECTION 6 — Loyalty Programs
 # -----------------------------------------------------------------------------
@@ -173,21 +186,6 @@ GET http://localhost:4004/admin/LoyaltyPrograms
 Authorization: Basic YWRtaW46
 
 ###
-
-### 6.2 POST - Enroll a customer in a loyalty program
-POST http://localhost:4004/admin/LoyaltyPrograms
-Authorization: Basic YWRtaW46
-Content-Type: application/json
-
-{
-  "loyaltyProgramID": "l2222222-2222-2222-2222-222222222222",
-  "programName": "Silver Rewards",
-  "pointsEarned": 300,
-  "pointsRedeemed": 0,
-  "tierLevel": "Silver",
-  "customer_customerID": "44444444-4444-4444-4444-444444444444"
-}
-
 
 # -----------------------------------------------------------------------------
 # SECTION 7 — Marketing Campaigns
@@ -205,7 +203,6 @@ Authorization: Basic YWRtaW46
 Content-Type: application/json
 
 {
-  "campaignID": "c2222222-2222-2222-2222-222222222222",
   "name": "Back to School 2026",
   "startDate": "2026-08-01",
   "endDate": "2026-09-15",
@@ -242,7 +239,6 @@ Authorization: Basic YWRtaW46
 Content-Type: application/json
 
 {
-  "tagID": "t1111111-1111-1111-1111-111111111111",
   "label": "VIP",
   "color": "#FFD700"
 }

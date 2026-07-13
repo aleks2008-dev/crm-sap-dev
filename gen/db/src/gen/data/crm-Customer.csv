@@ -1,3 +1,7 @@
-customerID,firstName,lastName,email,phone,statusCode_code,averageRating
-33333333-3333-3333-3333-333333333333,Alex,Brown,alex.brown@example.com,+79990001122,Active,0.00
-44444444-4444-4444-4444-444444444444,Emma,Watson,emma.w@example.com,+1234567890,At-Risk,2.50
+customerID,firstName,lastName,email,phone,statusCode_code,averageRating,categoryGroup_code
+33333333-3333-3333-3333-333333333333,Alex,Brown,alex.brown@example.com,+79990001122,Active,4.50,TechEnthusiast
+44444444-4444-4444-4444-444444444444,Emma,Watson,emma.w@example.com,+1234567890,At-Risk,2.50,AccessoriesBuyer
+55555555-5555-5555-5555-555555555555,John,Smith,john.smith@example.com,+44207946000,Inactive,3.00,TechEnthusiast
+66666666-6666-6666-6666-666666666666,Maria,Garcia,maria.garcia@example.com,+34911234567,Active,4.80,AccessoriesBuyer
+77777777-7777-7777-7777-777777777777,David,Lee,david.lee@example.com,+8210234567,Active,3.90,TechEnthusiast
+88888888-8888-8888-8888-888888888888,Sofia,Chen,sofia.chen@example.com,+861012345678,At-Risk,1.80,AccessoriesBuyer

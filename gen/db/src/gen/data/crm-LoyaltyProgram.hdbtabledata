@@ -13,7 +13,7 @@
       },
       "import_settings": {
         "import_columns": [
-          "LOYALTYPROGRAMID",
+          "ID",
           "PROGRAMNAME",
           "POINTSEARNED",
           "POINTSREDEEMED",
@@ -23,7 +23,7 @@
         "include_filter": []
       },
       "column_mappings": {
-        "LOYALTYPROGRAMID": "loyaltyProgramID",
+        "ID": "ID",
         "PROGRAMNAME": "programName",
         "POINTSEARNED": "pointsEarned",
         "POINTSREDEEMED": "pointsRedeemed",

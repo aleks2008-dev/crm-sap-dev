@@ -1,5 +1,5 @@
 VIEW AdminService_Feedbacks AS SELECT
-  Feedback_0.feedbackID,
+  Feedback_0.ID,
   Feedback_0.rating,
   Feedback_0.comments,
   Feedback_0.feedbackDate,
