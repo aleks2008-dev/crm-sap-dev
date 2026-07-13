@@ -19,7 +19,8 @@
           "EMAIL",
           "PHONE",
           "STATUSCODE_CODE",
-          "AVERAGERATING"
+          "AVERAGERATING",
+          "CATEGORYGROUP_CODE"
         ],
         "include_filter": []
       },
@@ -30,7 +31,8 @@
         "EMAIL": "email",
         "PHONE": "phone",
         "STATUSCODE_CODE": "statusCode_code",
-        "AVERAGERATING": "averageRating"
+        "AVERAGERATING": "averageRating",
+        "CATEGORYGROUP_CODE": "categoryGroup_code"
       }
     }
   ]

@@ -1,6 +1,6 @@
 VIEW SalesService_Preferences AS SELECT
-  Preference_0.preferenceID,
-  Preference_0.productCategory,
+  Preference_0.ID,
+  Preference_0.productCategory_code,
   Preference_0.notes,
   Preference_0.customer_customerID
 FROM crm_Preference AS Preference_0

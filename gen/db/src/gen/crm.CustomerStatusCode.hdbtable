@@ -1,6 +1,7 @@
 COLUMN TABLE crm_CustomerStatusCode (
+  name NVARCHAR(255),
+  descr NVARCHAR(1000),
   code NVARCHAR(20) NOT NULL,
-  description NVARCHAR(100),
   colorCode NVARCHAR(7),
   criticality INTEGER,
   PRIMARY KEY(code)

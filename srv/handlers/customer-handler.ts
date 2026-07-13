@@ -1,27 +1,46 @@
-import cds from '@sap/cds';
+import cds, { Service, Request } from '@sap/cds';
 
-export default async function (this: any) {
+
+const CUSTOMER_STATUS = {
+    AT_RISK: 'At-Risk',
+    ACTIVE: 'Active',
+    INACTIVE: 'Inactive'
+} as const;
+
+const INTERACTION_TYPE = {
+    FEEDBACK: 'Feedback'
+} as const;
+
+export default async function (this: Service) {
     const { Customer, Feedback, Interaction } = cds.entities('crm');
 
-    this.on('calculateAverageRating', async (req: any) => {
+    this.before('SAVE', 'Customers', async (req: Request) => {
         const { customerID } = req.data;
+        if (!customerID) return;
 
-        const feedback = await SELECT.from(Feedback).where({ customer_customerID: customerID });
+        const drafts = await SELECT.from(Feedback).where({ customer_customerID: customerID });
 
-        if (feedback.length === 0) return 0;
+        let totalRating = 0;
+        let validFeedbackCount = 0;
 
-        const sum = feedback.reduce((acc: number, f: any) => acc + f.rating, 0);
-        const avg = sum / feedback.length;
+        for (const f of drafts) {
+            if (f.rating !== undefined && f.rating !== null) {
+                if (f.rating < 1 || f.rating > 5) {
+                    return req.error(400, 'The rating must be between 1 and 5.', 'in/feedbacks');
+                }
+                totalRating += f.rating;
+                validFeedbackCount++;
+            }
+            if (typeof f.comments === 'string') {
+                const trimmedComment = f.comments.trim();
+                if (trimmedComment.length > 0 && trimmedComment.length < 5) {
+                    return req.error(400, 'The comment must contain at least 5 characters.', 'in/feedbacks');
+                }
+            }
+        }
 
-        await UPDATE(Customer).set({ averageRating: avg }).where({ customerID });
-        return avg;
-    });
-
-    this.on('updateCustomerStatus', async (req: any) => {
-        const { customerID } = req.data;
-
-        const customer = await SELECT.one.from(Customer).where({ customerID });
-        if (!customer) return req.error(404, `Customer with ID ${customerID} not found`);
+        const avgRating = validFeedbackCount === 0 ? 0 : totalRating / validFeedbackCount;
+        req.data.averageRating = avgRating;
 
         const sixMonthsAgo = new Date();
         sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
@@ -31,28 +50,49 @@ export default async function (this: any) {
             .and(`date >= '${sixMonthsAgo.toISOString()}'`);
 
         let targetStatus: string;
-
-        if (customer.averageRating && customer.averageRating < 3.0) {
-            targetStatus = 'At-Risk';
+        if (avgRating > 0 && avgRating < 3.0) {
+            targetStatus = CUSTOMER_STATUS.AT_RISK;
         } else if (recentInteraction) {
-            targetStatus = 'Active';
+            targetStatus = CUSTOMER_STATUS.ACTIVE;
         } else {
-            targetStatus = 'Inactive';
+            targetStatus = CUSTOMER_STATUS.INACTIVE;
         }
 
-        await UPDATE(Customer).set({ statusCode_code: targetStatus }).where({ customerID });
-
-        return true;
+        req.data.statusCode_code = targetStatus;
     });
 
-    this.after('CREATE', 'Feedbacks', async (data: any) => {
-        await INSERT.into(Interaction).entries({
-            date: new Date().toISOString(),
-            type: 'Feedback',
-            method: 'Feedback',
-            summary: `Feedback submitted with rating ${data.rating}`,
-            description: data.comments,
-            customer_customerID: data.customer_customerID
-        });
+    this.after('SAVE', 'Customers', async (data: any) => {
+        const { customerID } = data;
+        if (!customerID) return;
+
+        const activeFeedbacks = await SELECT.from(Feedback).where({ customer_customerID: customerID });
+
+        for (const feedback of activeFeedbacks) {
+            const exists = await SELECT.one.from(Interaction).where({
+                customer_customerID: customerID,
+                description: feedback.comments || '',
+                interactionType_code: INTERACTION_TYPE.FEEDBACK
+            });
+
+            if (!exists) {
+                await INSERT.into(Interaction).entries({
+                    date: new Date().toISOString(),
+                    interactionType_code: INTERACTION_TYPE.FEEDBACK,
+                    method: INTERACTION_TYPE.FEEDBACK,
+                    summary: `Feedback submitted with rating ${feedback.rating}`,
+                    description: feedback.comments || '',
+                    customer_customerID: customerID
+                });
+            }
+        }
     });
+
+    this.on('calculateAverageRating', async (req: Request) => {
+        const { customerID } = req.data;
+        const feedback = await SELECT.from(Feedback).where({ customer_customerID: customerID });
+        const avg = feedback.length === 0 ? 0 : feedback.reduce((acc: number, f: { rating: number }) => acc + f.rating, 0) / feedback.length;
+        await UPDATE(Customer).set({ averageRating: avg }).where({ customerID });
+        return avg;
+    });
+
 }

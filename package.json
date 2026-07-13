@@ -7,6 +7,8 @@
   "scripts": {
     "start": "cds-serve",
     "test": "jest --runInBand --detectOpenHandles",
+    "lint": "eslint srv/ test/",
+    "lint:fix": "eslint srv/ test/ --fix",
     "watch-projectcrm": "cds watch --open crm.projectcrm/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "devDependencies": {

@@ -13,7 +13,7 @@
       },
       "import_settings": {
         "import_columns": [
-          "FEEDBACKID",
+          "ID",
           "RATING",
           "COMMENTS",
           "FEEDBACKDATE",
@@ -22,7 +22,7 @@
         "include_filter": []
       },
       "column_mappings": {
-        "FEEDBACKID": "feedbackID",
+        "ID": "ID",
         "RATING": "rating",
         "COMMENTS": "comments",
         "FEEDBACKDATE": "feedbackDate",

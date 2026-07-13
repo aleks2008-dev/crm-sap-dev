@@ -1,4 +1,4 @@
-code,description,colorCode,criticality
+code,name,colorCode,criticality
 Active,Regular active customer,#00FF00,3
 At-Risk,Customer at risk of churning,#FF9900,1
 Inactive,No activity for 6 months,#FF0000,0

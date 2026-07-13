@@ -1,6 +1,11 @@
-import cds from '@sap/cds';
+import cds, { Service, Request } from '@sap/cds';
 
-function extractProductCategories(orders: any[]): string[] {
+interface OrderInteraction {
+    summary?: string;
+    description?: string;
+}
+
+function extractProductCategories(orders: OrderInteraction[]): string[] {
     const categories = new Set<string>();
     for (const order of orders) {
         const text = `${order.summary || ''} ${order.description || ''}`.toLowerCase();
@@ -10,19 +15,26 @@ function extractProductCategories(orders: any[]): string[] {
     return Array.from(categories);
 }
 
-export default async function (this: any) {
-    const { Customer, Preference, Interaction } = cds.entities('crm');
+export default async function (this: Service) {
+    const { Preference, Interaction } = cds.entities('crm');
 
-    this.on('analyzePreferences', async (req: any) => {
+    this.before('analyzePreferences', async (req: Request) => {
+        if (!req.data.customerID) {
+            return req.error(400, 'customerID is a mandatory field for analysis.');
+        }
+    });
+
+    this.on('analyzePreferences', async (req: Request) => {
         const { customerID } = req.data;
 
-        const orders = await SELECT.from(Interaction).where({ customer_customerID: customerID, method: 'Order' });
+        const orders: OrderInteraction[] = await SELECT.from(Interaction)
+            .where({ customer_customerID: customerID, method: 'Order' });
 
         const categories = extractProductCategories(orders);
 
         for (const category of categories) {
             await INSERT.into(Preference).entries({
-                productCategory: category,
+                productCategory_code: category,
                 customer_customerID: customerID,
                 notes: 'Auto-detected from purchase history'
             });

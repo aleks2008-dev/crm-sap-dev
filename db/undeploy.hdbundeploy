@@ -1,0 +1,14 @@
+{
+  "entries": [
+    "crm.Customer",
+    "crm.CustomerTag",
+    "crm.CustomerTags",
+    "crm.MarketingCampaign",
+    "crm.CustomerCampaigns",
+    "crm.Preference",
+    "crm.Feedback",
+    "crm.Interaction",
+    "crm.CustomerNote",
+    "crm.LoyaltyProgram"
+  ]
+}

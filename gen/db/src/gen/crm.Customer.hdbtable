@@ -1,4 +1,8 @@
 COLUMN TABLE crm_Customer (
+  createdAt TIMESTAMP,
+  createdBy NVARCHAR(255),
+  modifiedAt TIMESTAMP,
+  modifiedBy NVARCHAR(255),
   customerID NVARCHAR(36) NOT NULL,
   firstName NVARCHAR(50),
   lastName NVARCHAR(50),
@@ -6,6 +10,6 @@ COLUMN TABLE crm_Customer (
   phone NVARCHAR(20),
   statusCode_code NVARCHAR(20),
   averageRating DECIMAL(3, 2),
-  categoryGroup NVARCHAR(50),
+  categoryGroup_code NVARCHAR(50),
   PRIMARY KEY(customerID)
 )

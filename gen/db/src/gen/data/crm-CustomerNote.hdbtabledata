@@ -13,7 +13,7 @@
       },
       "import_settings": {
         "import_columns": [
-          "NOTEID",
+          "ID",
           "CONTENT",
           "AUTHORID",
           "DATE",
@@ -22,7 +22,7 @@
         "include_filter": []
       },
       "column_mappings": {
-        "NOTEID": "noteID",
+        "ID": "ID",
         "CONTENT": "content",
         "AUTHORID": "authorID",
         "DATE": "date",

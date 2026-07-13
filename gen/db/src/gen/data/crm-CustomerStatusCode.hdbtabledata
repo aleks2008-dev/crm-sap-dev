@@ -14,7 +14,7 @@
       "import_settings": {
         "import_columns": [
           "CODE",
-          "DESCRIPTION",
+          "NAME",
           "COLORCODE",
           "CRITICALITY"
         ],
@@ -22,7 +22,7 @@
       },
       "column_mappings": {
         "CODE": "code",
-        "DESCRIPTION": "description",
+        "NAME": "name",
         "COLORCODE": "colorCode",
         "CRITICALITY": "criticality"
       }
