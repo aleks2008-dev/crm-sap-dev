@@ -27,17 +27,22 @@ export default async function (this: Service) {
     this.on('analyzePreferences', async (req: Request) => {
         const { customerID } = req.data;
 
-        const orders: OrderInteraction[] = await SELECT.from(Interaction)
-            .where({ customer_customerID: customerID, method: 'Order' });
+        try {
+            const orders: OrderInteraction[] = await SELECT.from(Interaction)
+                .where({ customer_customerID: customerID, method: 'Order' });
 
-        const categories = extractProductCategories(orders);
+            const categories = extractProductCategories(orders);
 
-        for (const category of categories) {
-            await INSERT.into(Preference).entries({
-                productCategory_code: category,
-                customer_customerID: customerID,
-                notes: 'Auto-detected from purchase history'
-            });
+            for (const category of categories) {
+                await INSERT.into(Preference).entries({
+                    productCategory_code: category,
+                    customer_customerID: customerID,
+                    notes: 'Auto-detected from purchase history'
+                });
+            }
+        } catch (error) {
+            console.error('Error analyzing preferences:', error);
+            return req.error(500, 'Failed to analyze customer preferences.');
         }
     });
 }
