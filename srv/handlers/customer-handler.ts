@@ -111,4 +111,35 @@ export default async function (this: Service) {
             return req.error(500, 'Failed to recalculate average rating.');
         }
     });
+
+    this.on('updateCustomerStatus', async (req: Request) => {
+        const { customerID } = req.data;
+
+        try {
+            const customer = await SELECT.one.from(Customer).where({ customerID });
+            if (!customer) return req.error(404, `Customer with ID ${customerID} not found`);
+
+            const sixMonthsAgo = new Date();
+            sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+
+            const recentInteraction = await SELECT.one.from(Interaction)
+                .where({ customer_customerID: customerID })
+                .and(`date >= '${sixMonthsAgo.toISOString()}'`);
+
+            let targetStatus: string;
+            if (customer.averageRating && customer.averageRating < 3.0) {
+                targetStatus = CUSTOMER_STATUS.AT_RISK;
+            } else if (recentInteraction) {
+                targetStatus = CUSTOMER_STATUS.ACTIVE;
+            } else {
+                targetStatus = CUSTOMER_STATUS.INACTIVE;
+            }
+
+            await UPDATE(Customer).set({ statusCode_code: targetStatus }).where({ customerID });
+            return true;
+        } catch (error) {
+            console.error('Error updating customer status:', error);
+            return req.error(500, 'Failed to update customer status.');
+        }
+    });
 }

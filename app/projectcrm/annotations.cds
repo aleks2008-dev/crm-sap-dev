@@ -62,7 +62,7 @@ annotate service.Customers with @(
             ID     : 'Tab2',
             Label  : 'Activity',
             Facets : [
-                { $Type  : 'UI.ReferenceFacet', ID : 'InteractionsFacet', Label : 'Interactions', Target : 'interactions/@UI.LineItem' },
+                { $Type  : 'UI.ReferenceFacet', ID : 'InteractionsFacet', Label : 'Interactions', Target : 'interactions/@UI.PresentationVariant' },
                 { $Type  : 'UI.ReferenceFacet', ID : 'FeedbacksFacet',    Label : 'Feedbacks',    Target : 'feedbacks/@UI.LineItem' },
                 { $Type  : 'UI.ReferenceFacet', ID : 'NotesFacet',        Label : 'Notes',        Target : 'notes/@UI.LineItem' },
             ],
@@ -114,7 +114,6 @@ annotate service.Customers with {
     categoryGroup @Common.TextArrangement           : #TextFirst;
 };
 
-// --- Custom Filter: Interaction type ---
 annotate service.Interactions with @(
     UI.LineItem : [
         { $Type : 'UI.DataField', Label : 'Date',        Value : date },
@@ -127,6 +126,12 @@ annotate service.Interactions with @(
         interactionType_code,
         date,
     ],
+    UI.PresentationVariant : {
+        $Type          : 'UI.PresentationVariantType',
+        SortOrder      : [{ Property : date, Descending : true }],
+        MaxItems       : 5,
+        Visualizations : ['@UI.LineItem'],
+    },
 );
 
 annotate service.Interactions with {
@@ -173,7 +178,6 @@ annotate service.LoyaltyPrograms with @(
     ]
 );
 
-// --- Labels for value-help target entities ---
 annotate service.StatusCodes with {
     code      @Common.Label : '{i18n>StatusCode.code}';
     name      @Common.Label : '{i18n>StatusCode.name}';
