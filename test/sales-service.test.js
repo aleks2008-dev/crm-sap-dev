@@ -81,7 +81,7 @@ describe('CRM Sales Service Test Suite', () => {
       const preferences = await SELECT.from(Preference).where({ customer_customerID: customerId });
       expect(preferences.length).toBe(2);
 
-      const productCategories = preferences.map(p => p.productCategory);
+      const productCategories = preferences.map(p => p.productCategory_code);
       expect(productCategories).toContain('Smartphones');
       expect(productCategories).toContain('Laptops');
       expect(preferences[0].notes).toBe('Auto-detected from purchase history');
