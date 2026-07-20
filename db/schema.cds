@@ -110,3 +110,33 @@ entity LoyaltyProgram : cuid {
         tierLevel       : String(20);
         customer        : Association to Customer;
 }
+
+
+entity Orders : cuid{
+    orderDate        : DateTime;
+    totalAmount      : Decimal(15, 2);
+    statusCode       : Association to OrderStatusCodes;
+    
+    customer         : Association to Customer; 
+    
+    items            : Composition of many OrderItems on items.order = $self;
+}
+
+entity OrderItems : cuid {
+    order            : Association to Orders;
+    mechanicalPart   : Association to MechanicalParts;
+    quantity         : Integer;
+    price            : Decimal(15, 2);
+}
+
+entity MechanicalParts : cuid {
+    name             : String(100);
+    description      : String(255);
+    price            : Decimal(15, 2);
+    quantityInStock  : Integer;
+}
+
+entity OrderStatusCodes {
+    key code : String(20);
+    name     : String(50);
+}
