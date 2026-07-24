@@ -9,7 +9,8 @@
     "test": "jest --runInBand --detectOpenHandles",
     "lint": "eslint srv/ test/",
     "lint:fix": "eslint srv/ test/ --fix",
-    "watch-projectcrm": "cds watch --open crm.projectcrm/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-projectcrm": "cds watch --open crm.projectcrm/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-project_orders": "cds watch --open projectorders/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "devDependencies": {
     "@cap-js/cds-test": "^1.0.1",
@@ -43,18 +44,46 @@
         "[development]": {
           "kind": "dummy",
           "users": {
-            "admin": { "roles": ["CRM-Admin"] },
-            "sales": { "roles": ["CRM-Sales"] },
-            "support": { "roles": ["CRM-Support"] }
+            "admin": {
+              "roles": [
+                "CRM-Admin"
+              ]
+            },
+            "sales": {
+              "roles": [
+                "CRM-Sales"
+              ]
+            },
+            "support": {
+              "roles": [
+                "CRM-Support"
+              ]
+            }
           }
         },
         "[hybrid]": {
           "kind": "mocked",
           "users": {
-            "admin": { "roles": ["CRM-Admin"] },
-            "sales": { "roles": ["CRM-Sales"] },
-            "support": { "roles": ["CRM-Support"] },
-            "*": { "roles": ["CRM-Admin"] }
+            "admin": {
+              "roles": [
+                "CRM-Admin"
+              ]
+            },
+            "sales": {
+              "roles": [
+                "CRM-Sales"
+              ]
+            },
+            "support": {
+              "roles": [
+                "CRM-Support"
+              ]
+            },
+            "*": {
+              "roles": [
+                "CRM-Admin"
+              ]
+            }
           }
         },
         "[production]": {
@@ -72,6 +101,7 @@
     "app/*"
   ],
   "sapux": [
-    "app/projectcrm"
+    "app/projectcrm",
+    "app/project_orders"
   ]
 }
