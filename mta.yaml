@@ -1,0 +1,84 @@
+_schema-version: '3.1'
+ID: crm_sap_dev
+version: 1.0.0
+description: CRM SAP CAP Application
+
+modules:
+
+  # --- Backend: CAP Node.js server ---
+  - name: crm_sap_dev-srv
+    type: nodejs
+    path: .
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+      disk-quota: 1024M
+    build-parameters:
+      builder: npm
+      ignore:
+        - node_modules/
+        - gen/
+        - .devcontainer/
+        - test/
+        - coverage/
+        - "*.http"
+        - "*.mtar"
+        - cf@
+        - cf-cli.tgz
+        - .crm_sap_dev_mta_build_tmp/
+        - mta_archives/
+        - "@cds-models/"
+    properties:
+      NODE_ENV: production
+    requires:
+      - name: crm_sap_dev-db-v2
+      - name: crm_sap_dev-auth
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+
+  # --- DB deployer: deploys HANA artifacts ---
+  - name: crm_sap_dev-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+      memory: 256M
+    requires:
+      - name: crm_sap_dev-db-v2
+
+  # --- Frontend: Fiori app ---
+  - name: crm_sap_dev-app
+    type: approuter.nodejs
+    path: app
+    properties:
+      TENANT_HOST_PATTERN: "^(.*)-${space}-crm-sap-dev-app\\.${default-domain}$"
+    parameters:
+      memory: 128M
+      disk-quota: 512M
+    requires:
+      - name: crm_sap_dev-auth
+      - name: srv-api
+        group: destinations
+        properties:
+          name: srv-api
+          url: ~{srv-url}
+          forwardAuthToken: true
+
+resources:
+
+  # --- HANA Cloud HDI container ---
+  - name: crm_sap_dev-db-v2
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
+  # --- XSUAA authentication ---
+  - name: crm_sap_dev-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json

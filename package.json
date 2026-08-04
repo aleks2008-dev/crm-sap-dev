@@ -6,6 +6,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "cds-serve",
+    "build": "tsc --outDir dist",
     "test": "jest --runInBand --detectOpenHandles",
     "lint": "eslint srv/ test/",
     "lint:fix": "eslint srv/ test/ --fix",
@@ -17,6 +18,7 @@
     "@cap-js/cds-typer": ">=0.1",
     "@cap-js/cds-types": "^0.16.0",
     "@cap-js/sqlite": "^2.4.0",
+    "@sap/cds-dk": "^9.9.4",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
     "cds-plugin-ui5": "^0.17.0",
@@ -31,6 +33,7 @@
     "#cds-models/*": "./@cds-models/*/index.js"
   },
   "cds": {
+    "typescript": true,
     "requires": {
       "db": {
         "[development]": {
@@ -95,7 +98,8 @@
   "dependencies": {
     "@cap-js/hana": "^2",
     "@sap/cds": "^10.0.3",
-    "@sap/xssec": "^4.13.1"
+    "@sap/xssec": "^4.13.1",
+    "tsx": "^4"
   },
   "workspaces": [
     "app/*"
