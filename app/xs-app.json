@@ -1,0 +1,26 @@
+{
+  "welcomeFile": "/projectcrm/index.html",
+  "authenticationMethod": "route",
+  "routes": [
+    {
+      "source": "^/admin/(.*)$",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/sales/(.*)$",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/support/(.*)$",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/(.*)$",
+      "localDir": ".",
+      "authenticationType": "xsuaa"
+    }
+  ]
+}
