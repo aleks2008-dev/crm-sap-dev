@@ -1,4 +1,1 @@
-
-using from './projectcrm/annotations';
-
-using from './project_orders/annotations';
+// UI annotations are embedded in manifest.json

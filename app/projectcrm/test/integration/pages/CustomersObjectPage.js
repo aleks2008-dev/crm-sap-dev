@@ -1,0 +1,2 @@
+sap.ui.define(["sap/ui/test/actions/Press"],function(s){"use strict";const t={iPressSectionIconTabFilterButton(t){return this.waitFor({id:new RegExp(`.*--fe::FacetSection::${t}-anchor$`),actions:new s})}};const n={};class e{actions=t;assertions=n}e.actions=t;e.assertions=n;return e});
+//# sourceMappingURL=CustomersObjectPage.js.map

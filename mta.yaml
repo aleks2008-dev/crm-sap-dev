@@ -53,10 +53,15 @@ modules:
     type: approuter.nodejs
     path: app
     properties:
-      TENANT_HOST_PATTERN: "^(.*)-${space}-crm-sap-dev-app\\.${default-domain}$"
     parameters:
       memory: 128M
       disk-quota: 512M
+    build-parameters:
+      builder: custom
+      commands:
+        - npm install
+      ignore:
+        - node_modules/
     requires:
       - name: crm_sap_dev-auth
       - name: srv-api
