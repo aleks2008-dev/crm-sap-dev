@@ -24,4 +24,4 @@ gen/
 
 # CF CLI
 cf-cli.tgz
-cf@
+cf@mta_archives/
