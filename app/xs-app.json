@@ -1,5 +1,5 @@
 {
-  "welcomeFile": "/projectcrm/index.html",
+  "welcomeFile": "projectcrm/index.html",
   "authenticationMethod": "route",
   "routes": [
     {
@@ -18,7 +18,25 @@
       "authenticationType": "xsuaa"
     },
     {
+      "source": "^/orders/(.*)$",
+      "destination": "srv-api",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/projectcrm/(.*)$",
+      "target": "/projectcrm/$1",
+      "localDir": ".",
+      "authenticationType": "xsuaa"
+    },
+    {
+      "source": "^/project_orders/(.*)$",
+      "target": "/project_orders/$1",
+      "localDir": ".",
+      "authenticationType": "xsuaa"
+    },
+    {
       "source": "^/(.*)$",
+      "target": "/$1",
       "localDir": ".",
       "authenticationType": "xsuaa"
     }

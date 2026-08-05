@@ -4,7 +4,7 @@ using { crm as db } from '../db/schema';
 service SalesService @(path: '/sales', impl: './handlers/preference-handler') {
     
     @readonly
-    entity Customers as projection on db.Customer;
+    entity Customers as projection on db.Customer excluding { tags };
 
     entity Interactions as projection on db.Interaction;
 
