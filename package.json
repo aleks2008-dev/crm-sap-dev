@@ -72,6 +72,11 @@
                 "CRM-Admin"
               ]
             },
+            "Admin": {
+              "roles": [
+                "CRM-Admin"
+              ]
+            },
             "sales": {
               "roles": [
                 "CRM-Sales"

@@ -22,7 +22,7 @@
 		},
 		"dataSources": {
 			"mainService": {
-				"uri": "/odata/v4/sales-order/",
+				"uri": "/orders/",
 				"type": "OData",
 				"settings": {
 					"annotations": [],

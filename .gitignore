@@ -24,4 +24,7 @@ gen/
 
 # CF CLI
 cf-cli.tgz
-cf@mta_archives/
+
+# MTA build artifacts
+mta_archives/
+*.mtar
