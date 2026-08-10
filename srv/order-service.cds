@@ -1,11 +1,24 @@
 using { crm as my } from '../db/schema';
 
-@requires: 'CRM-Admin'
+@requires: ['CRM-Admin', 'CRM-Sales', 'Warehouse-Manager']
 service SalesOrderService @(path: '/orders') {
+    @restrict: [
+        { grant: ['READ'],                        to: ['CRM-Admin', 'CRM-Sales', 'Warehouse-Manager'] },
+        { grant: ['CREATE', 'UPDATE', 'DELETE'],   to: ['CRM-Admin', 'CRM-Sales'] }
+    ]
     @odata.draft.enabled
     entity Orders as projection on my.Orders;
 
+    @restrict: [
+        { grant: ['READ'],                        to: ['CRM-Admin', 'CRM-Sales', 'Warehouse-Manager'] },
+        { grant: ['CREATE', 'UPDATE', 'DELETE'],   to: ['CRM-Admin', 'CRM-Sales'] }
+    ]
     entity OrderItems as projection on my.OrderItems;
+
+    @restrict: [
+        { grant: 'READ',                          to: ['CRM-Admin', 'CRM-Sales', 'Warehouse-Manager'] },
+        { grant: ['CREATE', 'UPDATE', 'DELETE'],   to: ['CRM-Admin', 'Warehouse-Manager'] }
+    ]
     entity MechanicalParts as projection on my.MechanicalParts;
 
     @readonly
