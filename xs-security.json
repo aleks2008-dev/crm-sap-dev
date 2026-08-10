@@ -7,18 +7,10 @@
     ]
   },
   "scopes": [
-    {
-      "name": "$XSAPPNAME.CRM-Admin",
-      "description": "CRM Admin Scope"
-    },
-    {
-      "name": "$XSAPPNAME.CRM-Sales",
-      "description": "CRM Sales Scope"
-    },
-    {
-      "name": "$XSAPPNAME.CRM-Support",
-      "description": "CRM Support Scope"
-    }
+    { "name": "$XSAPPNAME.CRM-Admin",        "description": "CRM Admin Scope" },
+    { "name": "$XSAPPNAME.CRM-Sales",         "description": "CRM Sales Scope" },
+    { "name": "$XSAPPNAME.CRM-Support",       "description": "CRM Support Scope" },
+    { "name": "$XSAPPNAME.Warehouse-Manager", "description": "Warehouse Manager Scope" }
   ],
   "role-templates": [
     {
@@ -35,6 +27,11 @@
       "name": "CRM-Support",
       "description": "Read-only access",
       "scope-references": ["$XSAPPNAME.CRM-Support"]
+    },
+    {
+      "name": "Warehouse-Manager",
+      "description": "Manage mechanical parts, read orders",
+      "scope-references": ["$XSAPPNAME.Warehouse-Manager"]
     }
   ],
   "role-collections": [
@@ -44,22 +41,24 @@
       "role-template-references": [
         "$XSAPPNAME.CRM-Admin",
         "$XSAPPNAME.CRM-Sales",
-        "$XSAPPNAME.CRM-Support"
+        "$XSAPPNAME.CRM-Support",
+        "$XSAPPNAME.Warehouse-Manager"
       ]
     },
     {
       "name": "CRM-Sales-RC",
       "description": "CRM Sales Role Collection",
-      "role-template-references": [
-        "$XSAPPNAME.CRM-Sales"
-      ]
+      "role-template-references": ["$XSAPPNAME.CRM-Sales"]
     },
     {
       "name": "CRM-Support-RC",
       "description": "CRM Support Role Collection",
-      "role-template-references": [
-        "$XSAPPNAME.CRM-Support"
-      ]
+      "role-template-references": ["$XSAPPNAME.CRM-Support"]
+    },
+    {
+      "name": "Warehouse-Manager-RC",
+      "description": "Warehouse Manager Role Collection",
+      "role-template-references": ["$XSAPPNAME.Warehouse-Manager"]
     }
   ]
 }

@@ -58,13 +58,11 @@
               ]
             },
             "support": {
-              "roles": [
-                "CRM-Support"
-              ]
-            }
-          }
-        },
-        "[hybrid]": {
+              "roles": ["CRM-Support"]
+            },
+            "warehouse": {
+              "roles": ["Warehouse-Manager"]
+            } {
           "kind": "mocked",
           "users": {
             "admin": {
@@ -83,14 +81,13 @@
               ]
             },
             "support": {
-              "roles": [
-                "CRM-Support"
-              ]
+              "roles": ["CRM-Support"]
+            },
+            "warehouse": {
+              "roles": ["Warehouse-Manager"]
             },
             "*": {
-              "roles": [
-                "CRM-Admin"
-              ]
+              "roles": ["CRM-Admin"]
             }
           }
         },
