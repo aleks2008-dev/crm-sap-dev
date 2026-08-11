@@ -3,7 +3,7 @@ using SalesOrderService from '../../srv/order-service';
 // ── List Report ───────────────────────────────────────────────────────────────
 
 annotate SalesOrderService.Orders with @(
-    UI.SelectionFields: [ statusCode_code ],
+    UI.SelectionFields: [ statusCode_code, orderDate, totalAmount, customer_customerID, items.mechanicalPart_ID ],
 
     UI.LineItem: [
         { Value: ID,          Label: 'Order ID' },
@@ -45,7 +45,7 @@ annotate SalesOrderService.Orders with @(
     ]
 );
 
-// ── Value Help for Status ─────────────────────────────────────────────────────
+// ── Value Helps ──────────────────────────────────────────────────────────────
 
 annotate SalesOrderService.Orders with {
     statusCode @(
@@ -57,6 +57,30 @@ annotate SalesOrderService.Orders with {
             ]
         },
         Common.ValueListWithFixedValues: true
+    );
+    customer @(
+        Common.ValueList: {
+            CollectionPath: 'Customers',
+            Parameters: [
+                { $Type: 'Common.ValueListParameterOut', LocalDataProperty: customer_customerID, ValueListProperty: 'customerID' },
+                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'firstName' },
+                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'lastName' },
+                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'email' }
+            ]
+        }
+    );
+};
+
+annotate SalesOrderService.OrderItems with {
+    mechanicalPart @(
+        Common.ValueList: {
+            CollectionPath: 'MechanicalParts',
+            Parameters: [
+                { $Type: 'Common.ValueListParameterOut', LocalDataProperty: mechanicalPart_ID, ValueListProperty: 'ID' },
+                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name' },
+                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'price' }
+            ]
+        }
     );
 };
 
