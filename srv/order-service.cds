@@ -1,7 +1,7 @@
 using { crm as my } from '../db/schema';
 
 @requires: ['CRM-Admin', 'CRM-Sales', 'Warehouse-Manager']
-service SalesOrderService @(path: '/orders') {
+service SalesOrderService @(path: '/orders', impl: './handlers/order-handler') {
     @restrict: [
         { grant: ['READ'],                        to: ['CRM-Admin', 'CRM-Sales', 'Warehouse-Manager'] },
         { grant: ['CREATE', 'UPDATE', 'DELETE'],   to: ['CRM-Admin', 'CRM-Sales'] }
@@ -26,4 +26,7 @@ service SalesOrderService @(path: '/orders') {
 
     @readonly
     entity Customers as projection on my.Customer { customerID, firstName, lastName, email, phone };
+
+    @restrict: [{ grant: '*', to: ['CRM-Admin', 'CRM-Sales'] }]
+    action changeOrderStatus(newStatus: String(20), comment: String(200)) returns Orders;
 }
