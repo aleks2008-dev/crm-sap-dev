@@ -1,5 +1,21 @@
 using SalesOrderService from '../../srv/order-service';
 
+// ── Dialog: Change Order Status ──────────────────────────────────────────────
+
+annotate SalesOrderService.Orders actions {
+    changeOrderStatus @(
+        Common.IsActionCritical: true,
+        UI.ParameterDefaultValue: newStatus,
+        cds.odata.bindingParameter.collection: false
+    ) with @(
+        Common.Label: 'Change Status'
+    );
+};
+
+annotate SalesOrderService.changeOrderStatus with @(
+    UI.OperationGrouping: #Isolated
+);
+
 // ── List Report ───────────────────────────────────────────────────────────────
 
 annotate SalesOrderService.Orders with @(
@@ -42,7 +58,13 @@ annotate SalesOrderService.Orders with @(
             Label: 'Order Items',
             Target: 'items/@UI.LineItem'
         }
-    ]
+    ],
+
+    UI.Identification: [{
+        $Type: 'UI.DataFieldForAction',
+        Action: 'SalesOrderService.changeOrderStatus',
+        Label: 'Change Status'
+    }]
 );
 
 // ── Value Helps ──────────────────────────────────────────────────────────────
@@ -68,6 +90,26 @@ annotate SalesOrderService.Orders with {
                 { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'email' }
             ]
         }
+    );
+};
+
+annotate SalesOrderService.changeOrderStatus with @(
+    UI.ParameterDefaultValue: newStatus
+) {
+    newStatus @(
+        Common.Label: 'New Status',
+        Common.ValueList: {
+            CollectionPath: 'OrderStatusCodes',
+            Parameters: [
+                { $Type: 'Common.ValueListParameterOut', LocalDataProperty: newStatus, ValueListProperty: 'code' },
+                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name' }
+            ]
+        },
+        Common.ValueListWithFixedValues: true
+    );
+    comment @(
+        Common.Label: 'Comment',
+        UI.MultiLineText: true
     );
 };
 
