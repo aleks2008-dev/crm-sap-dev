@@ -62,7 +62,10 @@
             },
             "warehouse": {
               "roles": ["Warehouse-Manager"]
-            } {
+            }
+          }
+        },
+        "[hybrid]": {
           "kind": "mocked",
           "users": {
             "admin": {
