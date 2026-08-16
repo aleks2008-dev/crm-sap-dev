@@ -1,9 +1,31 @@
 using SalesOrderService from '../../srv/order-service';
 
+// ── Property Labels / Titles ───────────────────────────────────────────────────
+
+annotate SalesOrderService.Orders with {
+    ID                  @title: 'Order ID';
+    orderDate           @title: 'Order Date';
+    totalAmount         @title: 'Total Amount';
+    
+    statusCode          @title: 'Status';
+    statusCode_code     @title: 'Status';
+    
+    customer            @title: 'Customer';
+    customer_customerID @title: 'Customer';
+};
+
+annotate SalesOrderService.OrderItems with {
+    mechanicalPart      @title: 'Mechanical Part';
+    mechanicalPart_ID   @title: 'Mechanical Part';
+    quantity            @title: 'Quantity';
+    price               @title: 'Price';
+};
+
 // ── List Report ───────────────────────────────────────────────────────────────
 
 annotate SalesOrderService.Orders with @(
-    UI.SelectionFields: [ statusCode_code, orderDate, totalAmount, customer_customerID, items.mechanicalPart_ID ],
+    // Для ассоциаций (statusCode, customer, items.mechanicalPart) FilterBar сам возьмет красивый заголовок
+    UI.SelectionFields: [ statusCode, orderDate, totalAmount, customer, items.mechanicalPart ],
 
     UI.LineItem: [
         { Value: ID,              Label: 'Order ID' },
@@ -19,8 +41,8 @@ annotate SalesOrderService.Orders with @(
     UI.HeaderInfo: {
         TypeName: 'Order',
         TypeNamePlural: 'Orders',
-        Title: { Value: ID },
-        Description: { Value: orderDate }
+        Title: { Value: customer.fullName }, // Крупный заголовок: имя клиента
+        Description: { Value: ID }           // Мелкий подзаголовок: UUID заказа
     },
 
     UI.FieldGroup #General: {

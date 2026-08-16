@@ -1,5 +1,15 @@
 using AdminService from '../../srv/admin-service';
 
+// ── Property Labels / Titles ───────────────────────────────────────────────────
+
+annotate AdminService.Customers with {
+    statusCode         @title: 'Status';
+    statusCode_code    @title: 'Status';
+    categoryGroup      @title: 'Category Group';
+    categoryGroup_code @title: 'Category Group';
+    averageRating      @title: 'Average Rating';
+};
+
 // ── Navigation Tips / QuickViews ─────────────────────────────────────────────
 
 annotate AdminService.Customers with {
@@ -38,7 +48,8 @@ annotate AdminService.Interactions with @(
 // ── List Report ──────────────────────────────────────────────────────────────
 
 annotate AdminService.Customers with @(
-    UI.SelectionFields: [ statusCode_code, categoryGroup_code, averageRating ],
+    // Использование имен ассоциаций позволяет Fiori лучше подтягивать названия
+    UI.SelectionFields: [ statusCode, categoryGroup, averageRating ],
 
     UI.LineItem: [
         {
