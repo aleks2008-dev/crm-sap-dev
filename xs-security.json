@@ -36,7 +36,7 @@
   ],
   "role-collections": [
     {
-      "name": "CRM-Admin-RC",
+      "name": "CRM-Admin-RC-v2",
       "description": "CRM Admin Role Collection",
       "role-template-references": [
         "$XSAPPNAME.CRM-Admin",

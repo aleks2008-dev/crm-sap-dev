@@ -1,76 +1,14 @@
 using SalesOrderService from '../../srv/order-service';
 
-// ── Navigation Tips / QuickViews ─────────────────────────────────────────────
-
-annotate SalesOrderService.Orders with {
-    customer @(
-        Common.QuickInfo: 'Customer details',
-        UI.QuickViewFacets: [{
-            $Type : 'UI.ReferenceFacet',
-            Target : '@UI.FieldGroup#CustomerQuick'
-        }]
-    );
-};
-
-annotate SalesOrderService.Orders with @(
-    UI.FieldGroup #CustomerQuick: {
-        Label: 'Customer',
-        Data: [
-            { Value: customer.firstName },
-            { Value: customer.lastName },
-            { Value: customer.email },
-            { Value: customer.phone }
-        ]
-    }
-);
-
-annotate SalesOrderService.OrderItems with {
-    mechanicalPart @(
-        Common.QuickInfo: 'Mechanical part details',
-        UI.QuickViewFacets: [{
-            $Type : 'UI.ReferenceFacet',
-            Target : '@UI.FieldGroup#PartQuick'
-        }]
-    );
-};
-
-annotate SalesOrderService.OrderItems with @(
-    UI.FieldGroup #PartQuick: {
-        Label: 'Part Info',
-        Data: [
-            { Value: mechanicalPart.name },
-            { Value: mechanicalPart.description },
-            { Value: mechanicalPart.price },
-            { Value: mechanicalPart.quantityInStock }
-        ]
-    }
-);
-
-// ── Dialog: Change Order Status ──────────────────────────────────────────────
-
-annotate SalesOrderService.Orders actions {
-    changeOrderStatus @(
-        Common.IsActionCritical: true,
-        UI.ParameterDefaultValue: newStatus,
-        cds.odata.bindingParameter.collection: false
-    ) with @(
-        Common.Label: 'Change Status'
-    );
-};
-
-annotate SalesOrderService.changeOrderStatus with @(
-    UI.OperationGrouping: #Isolated
-);
-
 // ── List Report ───────────────────────────────────────────────────────────────
 
 annotate SalesOrderService.Orders with @(
     UI.SelectionFields: [ statusCode_code, orderDate, totalAmount, customer_customerID, items.mechanicalPart_ID ],
 
     UI.LineItem: [
-        { Value: ID,          Label: 'Order ID' },
-        { Value: orderDate,   Label: 'Order Date' },
-        { Value: totalAmount, Label: 'Total Amount' },
+        { Value: ID,              Label: 'Order ID' },
+        { Value: orderDate,       Label: 'Order Date' },
+        { Value: totalAmount,     Label: 'Total Amount' },
         { Value: statusCode_code, Label: 'Status' }
     ]
 );
@@ -145,12 +83,12 @@ annotate SalesOrderService.Orders with @(
 
     UI.Identification: [{
         $Type: 'UI.DataFieldForAction',
-        Action: 'SalesOrderService.changeOrderStatus',
+        Action: 'SalesOrderService.Orders_changeStatus',
         Label: 'Change Status'
     }]
 );
 
-// ── Value Helps ──────────────────────────────────────────────────────────────
+// ── Value Helps ───────────────────────────────────────────────────────────────
 
 annotate SalesOrderService.Orders with {
     statusCode @(
@@ -164,6 +102,7 @@ annotate SalesOrderService.Orders with {
         Common.ValueListWithFixedValues: true
     );
     customer @(
+        Common.QuickInfo: 'Customer details',
         Common.ValueList: {
             CollectionPath: 'Customers',
             Parameters: [
@@ -176,28 +115,9 @@ annotate SalesOrderService.Orders with {
     );
 };
 
-annotate SalesOrderService.changeOrderStatus with @(
-    UI.ParameterDefaultValue: newStatus
-) {
-    newStatus @(
-        Common.Label: 'New Status',
-        Common.ValueList: {
-            CollectionPath: 'OrderStatusCodes',
-            Parameters: [
-                { $Type: 'Common.ValueListParameterOut', LocalDataProperty: newStatus, ValueListProperty: 'code' },
-                { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name' }
-            ]
-        },
-        Common.ValueListWithFixedValues: true
-    );
-    comment @(
-        Common.Label: 'Comment',
-        UI.MultiLineText: true
-    );
-};
-
 annotate SalesOrderService.OrderItems with {
     mechanicalPart @(
+        Common.QuickInfo: 'Mechanical part details',
         Common.ValueList: {
             CollectionPath: 'MechanicalParts',
             Parameters: [

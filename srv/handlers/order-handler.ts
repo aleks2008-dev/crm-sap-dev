@@ -12,7 +12,7 @@ export default async function (this: Service) {
         req.data.totalAmount = Math.round(total * 100) / 100;
     });
 
-    this.on('changeOrderStatus', 'Orders', async (req: Request) => {
+    this.on('Orders_changeStatus', 'Orders', async (req: Request) => {
         const { newStatus, comment } = req.data;
         const id = (req.params[0] as any).ID;
 

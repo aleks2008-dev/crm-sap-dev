@@ -28,5 +28,5 @@ service SalesOrderService @(path: '/orders', impl: './handlers/order-handler') {
     entity Customers as projection on my.Customer { customerID, firstName, lastName, email, phone };
 
     @restrict: [{ grant: '*', to: ['CRM-Admin', 'CRM-Sales'] }]
-    action changeOrderStatus(newStatus: String(20), comment: String(200)) returns Orders;
+    action Orders_changeStatus(newStatus: String(20), comment: String(200)) returns Orders;
 }
