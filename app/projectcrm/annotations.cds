@@ -1,5 +1,40 @@
 using AdminService from '../../srv/admin-service';
 
+// ── Navigation Tips / QuickViews ─────────────────────────────────────────────
+
+annotate AdminService.Customers with {
+    statusCode @(
+        Common.QuickInfo: 'Customer status details'
+    );
+    categoryGroup @(
+        Common.QuickInfo: 'Customer category group'
+    );
+};
+
+annotate AdminService.Interactions with {
+    interactionType @(
+        Common.QuickInfo: 'Type of customer interaction'
+    );
+    customer @(
+        Common.QuickInfo: 'Related customer',
+        UI.QuickViewFacets: [{
+            $Type : 'UI.ReferenceFacet',
+            Target : '@UI.FieldGroup#InteractionCustomerQuick'
+        }]
+    );
+};
+
+annotate AdminService.Interactions with @(
+    UI.FieldGroup #InteractionCustomerQuick: {
+        Label: 'Customer',
+        Data: [
+            { Value: customer.fullName },
+            { Value: customer.email },
+            { Value: customer.phone }
+        ]
+    }
+);
+
 // ── List Report ──────────────────────────────────────────────────────────────
 
 annotate AdminService.Customers with @(
