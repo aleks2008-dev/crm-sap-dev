@@ -1,7 +1,16 @@
 import cds, { Service, Request } from '@sap/cds';
 
 export default async function (this: Service) {
-    const { Orders } = cds.entities('crm');
+    const { Orders, OrderItems } = cds.entities('crm');
+
+    this.before('SAVE', 'Orders', async (req: Request) => {
+        const { ID } = req.data;
+        if (!ID) return;
+
+        const items = await SELECT.from(OrderItems).where({ order_ID: ID });
+        const total = items.reduce((sum: number, item: any) => sum + (item.quantity ?? 0) * (item.price ?? 0), 0);
+        req.data.totalAmount = Math.round(total * 100) / 100;
+    });
 
     this.on('changeOrderStatus', 'Orders', async (req: Request) => {
         const { newStatus, comment } = req.data;

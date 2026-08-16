@@ -1,5 +1,51 @@
 using SalesOrderService from '../../srv/order-service';
 
+// ── Navigation Tips / QuickViews ─────────────────────────────────────────────
+
+annotate SalesOrderService.Orders with {
+    customer @(
+        Common.QuickInfo: 'Customer details',
+        UI.QuickViewFacets: [{
+            $Type : 'UI.ReferenceFacet',
+            Target : '@UI.FieldGroup#CustomerQuick'
+        }]
+    );
+};
+
+annotate SalesOrderService.Orders with @(
+    UI.FieldGroup #CustomerQuick: {
+        Label: 'Customer',
+        Data: [
+            { Value: customer.firstName },
+            { Value: customer.lastName },
+            { Value: customer.email },
+            { Value: customer.phone }
+        ]
+    }
+);
+
+annotate SalesOrderService.OrderItems with {
+    mechanicalPart @(
+        Common.QuickInfo: 'Mechanical part details',
+        UI.QuickViewFacets: [{
+            $Type : 'UI.ReferenceFacet',
+            Target : '@UI.FieldGroup#PartQuick'
+        }]
+    );
+};
+
+annotate SalesOrderService.OrderItems with @(
+    UI.FieldGroup #PartQuick: {
+        Label: 'Part Info',
+        Data: [
+            { Value: mechanicalPart.name },
+            { Value: mechanicalPart.description },
+            { Value: mechanicalPart.price },
+            { Value: mechanicalPart.quantityInStock }
+        ]
+    }
+);
+
 // ── Dialog: Change Order Status ──────────────────────────────────────────────
 
 annotate SalesOrderService.Orders actions {
@@ -47,16 +93,53 @@ annotate SalesOrderService.Orders with @(
         ]
     },
 
+    UI.FieldGroup #Customer: {
+        Data: [
+            { Value: customer_customerID },
+            { Value: customer.firstName },
+            { Value: customer.lastName },
+            { Value: customer.email },
+            { Value: customer.phone }
+        ]
+    },
+
     UI.Facets: [
         {
-            $Type: 'UI.ReferenceFacet',
+            $Type: 'UI.CollectionFacet',
+            ID: 'OrderDetails',
             Label: 'Order Details',
-            Target: '@UI.FieldGroup#General'
+            Facets: [{
+                $Type: 'UI.ReferenceFacet',
+                Label: 'General',
+                Target: '@UI.FieldGroup#General'
+            }]
         },
         {
-            $Type: 'UI.ReferenceFacet',
+            $Type: 'UI.CollectionFacet',
+            ID: 'OrderItems',
             Label: 'Order Items',
-            Target: 'items/@UI.LineItem'
+            Facets: [{
+                $Type: 'UI.ReferenceFacet',
+                Label: 'Items',
+                Target: 'items/@UI.LineItem'
+            }]
+        },
+        {
+            $Type: 'UI.CollectionFacet',
+            ID: 'CustomerInfo',
+            Label: 'Customer & Parts',
+            Facets: [
+                {
+                    $Type: 'UI.ReferenceFacet',
+                    Label: 'Customer',
+                    Target: '@UI.FieldGroup#Customer'
+                },
+                {
+                    $Type: 'UI.ReferenceFacet',
+                    Label: 'Mechanical Parts',
+                    Target: 'MechanicalParts/@UI.LineItem'
+                }
+            ]
         }
     ],
 
@@ -133,5 +216,16 @@ annotate SalesOrderService.OrderItems with @(
         { Value: mechanicalPart_ID, Label: 'Part' },
         { Value: quantity,          Label: 'Quantity' },
         { Value: price,             Label: 'Price' }
+    ]
+);
+
+// ── Mechanical Parts Table ────────────────────────────────────────────────────
+
+annotate SalesOrderService.MechanicalParts with @(
+    UI.LineItem: [
+        { Value: name,            Label: 'Name' },
+        { Value: description,     Label: 'Description' },
+        { Value: price,           Label: 'Price' },
+        { Value: quantityInStock, Label: 'In Stock' }
     ]
 );
