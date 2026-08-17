@@ -87,19 +87,12 @@ annotate SalesOrderService.Orders with @(
         {
             $Type: 'UI.CollectionFacet',
             ID: 'CustomerInfo',
-            Label: 'Customer & Parts',
-            Facets: [
-                {
-                    $Type: 'UI.ReferenceFacet',
-                    Label: 'Customer',
-                    Target: '@UI.FieldGroup#Customer'
-                },
-                {
-                    $Type: 'UI.ReferenceFacet',
-                    Label: 'Mechanical Parts',
-                    Target: 'MechanicalParts/@UI.LineItem'
-                }
-            ]
+            Label: 'Customer',
+            Facets: [{
+                $Type: 'UI.ReferenceFacet',
+                Label: 'Customer',
+                Target: '@UI.FieldGroup#Customer'
+            }]
         }
     ],
 
