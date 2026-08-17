@@ -9,12 +9,13 @@
     "build": "tsc --outDir dist",
     "build:cf": "cds build --production && npm run build",
     "test": "jest --runInBand --detectOpenHandles",
-    "lint": "eslint srv/ test/",
-    "lint:fix": "eslint srv/ test/ --fix",
+    "lint": "eslint \"srv/**/*.ts\" \"test/**/*.js\"",
+    "lint:fix": "eslint \"srv/**/*.ts\" \"test/**/*.js\" --fix",
     "watch-projectcrm": "cds watch --open crm.projectcrm/index.html?sap-ui-xx-viewCache=false --livereload false",
     "watch-project_orders": "cds watch --open projectorders/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.0",
     "@cap-js/cds-test": "^1.0.1",
     "@cap-js/cds-typer": ">=0.1",
     "@cap-js/cds-types": "^0.16.0",
@@ -23,12 +24,14 @@
     "@types/jest": "^30.0.0",
     "@types/node": "^24.0.0",
     "cds-plugin-ui5": "^0.17.0",
+    "eslint": "^10.0.0",
     "jest": "^30.4.2",
     "sqlite3": "^6.0.1",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.11",
     "tsx": "^4",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "typescript-eslint": "^8.0.0"
   },
   "imports": {
     "#cds-models/*": "./@cds-models/*/index.js"

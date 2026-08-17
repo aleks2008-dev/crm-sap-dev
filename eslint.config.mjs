@@ -20,6 +20,6 @@ export default tseslint.config(
         },
     },
     {
-        ignores: ['gen/', '@cds-models/', 'node_modules/', 'coverage/', 'app/'],
+        ignores: ['gen/', '@cds-models/', 'node_modules/', 'coverage/', 'app/', 'srv/handlers/*.js', 'dist/'],
     }
 );
