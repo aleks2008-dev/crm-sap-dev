@@ -7,7 +7,10 @@ service SalesOrderService @(path: '/orders', impl: './handlers/order-handler') {
         { grant: ['CREATE', 'UPDATE', 'DELETE'],   to: ['CRM-Admin', 'CRM-Sales'] }
     ]
     @odata.draft.enabled
-    entity Orders as projection on my.Orders;
+    entity Orders as projection on my.Orders actions {
+        @restrict: [{ grant: '*', to: ['CRM-Admin', 'CRM-Sales'] }]
+        action Orders_changeStatus(newStatus: String(20), comment: String(200)) returns Orders;
+    };
 
     @restrict: [
         { grant: ['READ'],                        to: ['CRM-Admin', 'CRM-Sales', 'Warehouse-Manager'] },
@@ -26,7 +29,4 @@ service SalesOrderService @(path: '/orders', impl: './handlers/order-handler') {
 
     @readonly
     entity Customers as projection on my.Customer;
-
-    @restrict: [{ grant: '*', to: ['CRM-Admin', 'CRM-Sales'] }]
-    action Orders_changeStatus(newStatus: String(20), comment: String(200)) returns Orders;
 }

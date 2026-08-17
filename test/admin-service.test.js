@@ -6,6 +6,7 @@ const ADMIN = { auth: { username: 'admin' } };
 
 const ALEX_ID = '33333333-3333-3333-3333-333333333333';
 const EMMA_ID = '44444444-4444-4444-4444-444444444444';
+const JOHN_ID = '55555555-5555-5555-5555-555555555555';
 const UNKNOWN_ID = '00000000-0000-0000-0000-000000000000';
 
 describe('Тестирование Сервиса AdminService (CRM)', () => {
@@ -68,7 +69,7 @@ describe('Тестирование Сервиса AdminService (CRM)', () => {
         );
 
         expect(status).toBe(200);
-        expect(Number(data)).toBe(4.5);
+        expect(Number(data.value)).toBe(4.5);
 
         const customer = await GET(`/admin/Customers(${ALEX_ID})`, ADMIN);
         expect(Number(customer.data.averageRating)).toBe(4.5);
@@ -77,12 +78,12 @@ describe('Тестирование Сервиса AdminService (CRM)', () => {
     it('calculateAverageRating должен вернуть 0, если у клиента нет отзывов', async () => {
         const { status, data } = await POST(
             '/admin/calculateAverageRating',
-            { customerID: EMMA_ID },
+            { customerID: JOHN_ID },
             ADMIN
         );
 
         expect(status).toBe(200);
-        expect(Number(data)).toBe(0);
+        expect(Number(data.value)).toBe(0);
     });
 
     // --- Business logic: updateCustomerStatus ---
@@ -95,7 +96,7 @@ describe('Тестирование Сервиса AdminService (CRM)', () => {
         );
 
         expect(status).toBe(200);
-        expect(data).toBe(true);
+        expect(data.value).toBe(true);
 
         const customer = await GET(`/admin/Customers(${EMMA_ID})`, ADMIN);
         expect(customer.data.statusCode_code).toBe('At-Risk');
