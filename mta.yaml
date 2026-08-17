@@ -3,6 +3,14 @@ ID: crm_sap_dev
 version: 1.0.0
 description: CRM SAP CAP Application
 
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install
+        - npx cds build --production
+        - npm run build
+
 modules:
 
   # --- Backend: CAP Node.js server ---
@@ -52,7 +60,6 @@ modules:
   - name: crm_sap_dev-app
     type: approuter.nodejs
     path: app
-    properties:
     parameters:
       memory: 128M
       disk-quota: 512M

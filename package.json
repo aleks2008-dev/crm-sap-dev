@@ -7,6 +7,7 @@
   "scripts": {
     "start": "cds-serve",
     "build": "tsc --outDir dist",
+    "build:cf": "cds build --production && npm run build",
     "test": "jest --runInBand --detectOpenHandles",
     "lint": "eslint srv/ test/",
     "lint:fix": "eslint srv/ test/ --fix",
