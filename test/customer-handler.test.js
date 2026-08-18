@@ -1,7 +1,7 @@
 const cds = require('@sap/cds');
 
 describe('Customer Handler Test Suite', () => {
-  const { POST, expect } = cds.test(__dirname + '/..');
+  const { POST, PATCH, expect } = cds.test(__dirname + '/..');
 
   let customerId;
 
@@ -50,6 +50,44 @@ describe('Customer Handler Test Suite', () => {
     });
   });
 
+  describe('after SAVE Customers', () => {
+    test('recalculates averageRating when feedback is added', async () => {
+      const { Customer, Feedback } = cds.entities('crm');
+      const saveId = cds.utils.uuid();
+      const ADMIN = { auth: { username: 'admin' } };
+
+      await INSERT.into(Customer).entries({
+        customerID: saveId,
+        firstName: 'Save',
+        lastName: 'Test',
+        email: 'save.test@example.com',
+        averageRating: 4.0,
+        statusCode_code: 'Active'
+      });
+      await INSERT.into(Feedback).entries([
+        { ID: cds.utils.uuid(), rating: 5, comments: 'Great!', customer_customerID: saveId },
+        { ID: cds.utils.uuid(), rating: 3, comments: 'Okay enough', customer_customerID: saveId }
+      ]);
+
+      await PATCH(`/admin/Customers(${saveId})`, { phone: '+100' }, ADMIN);
+
+      let updated = await SELECT.one.from(Customer).where({ customerID: saveId });
+      expect(Number(updated.averageRating)).toBe(4);
+
+      await INSERT.into(Feedback).entries({
+        ID: cds.utils.uuid(),
+        rating: 1,
+        comments: 'Poor experience here',
+        customer_customerID: saveId
+      });
+
+      await PATCH(`/admin/Customers(${saveId})`, { phone: '+101' }, ADMIN);
+
+      updated = await SELECT.one.from(Customer).where({ customerID: saveId });
+      expect(Number(updated.averageRating)).toBe(3);
+    });
+  });
+
   describe('Action: updateCustomerStatus', () => {
     test('sets Active when recent interaction exists and rating >= 3', async () => {
       const res = await POST('/admin/updateCustomerStatus', { customerID: customerId });
@@ -63,10 +101,13 @@ describe('Customer Handler Test Suite', () => {
 
     test('sets At-Risk when averageRating < 3', async () => {
       const atRiskId = cds.utils.uuid();
-      const { Customer } = cds.entities('crm');
+      const { Customer, Feedback } = cds.entities('crm');
       await INSERT.into(Customer).entries([{
         customerID: atRiskId, firstName: 'AtRisk', lastName: 'User',
         email: 'atrisk@example.com', averageRating: 2.0
+      }]);
+      await INSERT.into(Feedback).entries([{
+        ID: cds.utils.uuid(), rating: 2, comments: 'Not good enough', customer_customerID: atRiskId
       }]);
       const res = await POST('/admin/updateCustomerStatus', { customerID: atRiskId });
       expect(res.status).toBe(200);

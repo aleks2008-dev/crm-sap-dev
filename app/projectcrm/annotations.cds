@@ -3,6 +3,11 @@ using AdminService from '../../srv/admin-service';
 // ── Property Labels / Titles ───────────────────────────────────────────────────
 
 annotate AdminService.Customers with {
+    firstName          @title: 'First Name';
+    lastName           @title: 'Last Name';
+    fullName           @title: 'Full Name';
+    email              @title: 'Email';
+    phone              @title: 'Phone';
     statusCode         @title: 'Status';
     statusCode_code    @title: 'Status';
     categoryGroup      @title: 'Category Group';

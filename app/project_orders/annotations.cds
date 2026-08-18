@@ -6,12 +6,27 @@ annotate SalesOrderService.Orders with {
     ID                  @title: 'Order ID';
     orderDate           @title: 'Order Date';
     totalAmount         @title: 'Total Amount';
-    
+
     statusCode          @title: 'Status';
+    statusCode          @Common.Text: statusCode.name;
     statusCode_code     @title: 'Status';
-    
+    statusCode_code     @Common.Text: statusCode.name;
+    statusCode_code     @Common.TextArrangement: #TextOnly;
+
     customer            @title: 'Customer';
+    customer            @Common.Text: customer.fullName;
     customer_customerID @title: 'Customer';
+    customer_customerID @Common.Text: customer.fullName;
+    customer_customerID @Common.TextArrangement: #TextOnly;
+};
+
+annotate SalesOrderService.Customers with {
+    customerID @title: 'Customer ID';
+    firstName  @title: 'First Name';
+    lastName   @title: 'Last Name';
+    fullName   @title: 'Full Name';
+    email      @title: 'Email';
+    phone      @title: 'Phone';
 };
 
 annotate SalesOrderService.OrderItems with {
@@ -28,10 +43,11 @@ annotate SalesOrderService.Orders with @(
     UI.SelectionFields: [ statusCode, orderDate, totalAmount, customer, items.mechanicalPart ],
 
     UI.LineItem: [
-        { Value: ID,              Label: 'Order ID' },
-        { Value: orderDate,       Label: 'Order Date' },
-        { Value: totalAmount,     Label: 'Total Amount' },
-        { Value: statusCode_code, Label: 'Status' }
+        { Value: ID,                  Label: 'Order ID' },
+        { Value: orderDate,           Label: 'Order Date' },
+        { Value: totalAmount,         Label: 'Total Amount' },
+        { Value: statusCode.name, Label: 'Status' },
+        { Value: customer.fullName, Label: 'Customer' }
     ]
 );
 
@@ -47,19 +63,18 @@ annotate SalesOrderService.Orders with @(
 
     UI.FieldGroup #General: {
         Data: [
-            { Value: orderDate },
-            { Value: totalAmount },
-            { Value: statusCode_code }
+            { Value: orderDate,       Label: 'Order Date' },
+            { Value: totalAmount,     Label: 'Total Amount' },
+            { Value: statusCode_code, Label: 'Status' }
         ]
     },
 
     UI.FieldGroup #Customer: {
         Data: [
-            { Value: customer_customerID },
-            { Value: customer.firstName },
-            { Value: customer.lastName },
-            { Value: customer.email },
-            { Value: customer.phone }
+            { Value: customer_customerID, Label: 'Customer' },
+            { Value: customer.fullName,   Label: 'Full Name' },
+            { Value: customer.email,      Label: 'Email' },
+            { Value: customer.phone,      Label: 'Phone' }
         ]
     },
 
