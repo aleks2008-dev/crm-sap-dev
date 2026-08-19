@@ -7,7 +7,11 @@ service SalesOrderService @(path: '/orders', impl: './handlers/order-handler') {
         { grant: ['CREATE', 'UPDATE', 'DELETE'],   to: ['CRM-Admin', 'CRM-Sales'] }
     ]
     @odata.draft.enabled
-    entity Orders as projection on my.Orders actions {
+    entity Orders as projection on my.Orders {
+        *,
+        statusCode : redirected to OrderStatusCodes,
+        statusCode.criticality as criticality
+    } actions {
         @restrict: [{ grant: '*', to: ['CRM-Admin', 'CRM-Sales'] }]
         action Orders_changeStatus(newStatus: String(20), comment: String(200)) returns Orders;
     };

@@ -6,12 +6,27 @@ annotate SalesOrderService.Orders with {
     ID                  @title: 'Order ID';
     orderDate           @title: 'Order Date';
     totalAmount         @title: 'Total Amount';
-    
+
     statusCode          @title: 'Status';
+    statusCode          @Common.Text: statusCode.name;
     statusCode_code     @title: 'Status';
-    
+    statusCode_code     @Common.Text: statusCode.name;
+    statusCode_code     @Common.TextArrangement: #TextOnly;
+
     customer            @title: 'Customer';
+    customer            @Common.Text: customer.fullName;
     customer_customerID @title: 'Customer';
+    customer_customerID @Common.Text: customer.fullName;
+    customer_customerID @Common.TextArrangement: #TextOnly;
+};
+
+annotate SalesOrderService.Customers with {
+    customerID @title: 'Customer ID';
+    firstName  @title: 'First Name';
+    lastName   @title: 'Last Name';
+    fullName   @title: 'Full Name';
+    email      @title: 'Email';
+    phone      @title: 'Phone';
 };
 
 annotate SalesOrderService.OrderItems with {
@@ -24,14 +39,19 @@ annotate SalesOrderService.OrderItems with {
 // ── List Report ───────────────────────────────────────────────────────────────
 
 annotate SalesOrderService.Orders with @(
-    // Для ассоциаций (statusCode, customer, items.mechanicalPart) FilterBar сам возьмет красивый заголовок
     UI.SelectionFields: [ statusCode, orderDate, totalAmount, customer, items.mechanicalPart ],
 
     UI.LineItem: [
-        { Value: ID,              Label: 'Order ID' },
-        { Value: orderDate,       Label: 'Order Date' },
-        { Value: totalAmount,     Label: 'Total Amount' },
-        { Value: statusCode_code, Label: 'Status' }
+        { Value: ID,                  Label: 'Order ID' },
+        { Value: orderDate,           Label: 'Order Date' },
+        { Value: totalAmount,         Label: 'Total Amount' },
+        {
+            Value: statusCode_code,
+            Label: 'Status',
+            Criticality: criticality,
+            CriticalityRepresentation: #WithIcon
+        },
+        { Value: customer.fullName, Label: 'Customer' }
     ]
 );
 
@@ -41,25 +61,43 @@ annotate SalesOrderService.Orders with @(
     UI.HeaderInfo: {
         TypeName: 'Order',
         TypeNamePlural: 'Orders',
-        Title: { Value: customer.fullName }, // Крупный заголовок: имя клиента
-        Description: { Value: ID }           // Мелкий подзаголовок: UUID заказа
+        Title: { Value: customer.fullName },
+        Description: { Value: ID }
+    },
+
+    UI.HeaderFacets: [{
+        $Type: 'UI.ReferenceFacet',
+        Target: '@UI.FieldGroup#Status'
+    }],
+
+    UI.FieldGroup #Status: {
+        Data: [{
+            Value: statusCode_code,
+            Label: 'Status',
+            Criticality: criticality,
+            CriticalityRepresentation: #WithIcon
+        }]
     },
 
     UI.FieldGroup #General: {
         Data: [
-            { Value: orderDate },
-            { Value: totalAmount },
-            { Value: statusCode_code }
+            { Value: orderDate,   Label: 'Order Date' },
+            { Value: totalAmount, Label: 'Total Amount' },
+            {
+                Value: statusCode_code,
+                Label: 'Status',
+                Criticality: criticality,
+                CriticalityRepresentation: #WithIcon
+            }
         ]
     },
 
     UI.FieldGroup #Customer: {
         Data: [
-            { Value: customer_customerID },
-            { Value: customer.firstName },
-            { Value: customer.lastName },
-            { Value: customer.email },
-            { Value: customer.phone }
+            { Value: customer_customerID, Label: 'Customer' },
+            { Value: customer.fullName,   Label: 'Full Name' },
+            { Value: customer.email,      Label: 'Email' },
+            { Value: customer.phone,      Label: 'Phone' }
         ]
     },
 
@@ -102,6 +140,23 @@ annotate SalesOrderService.Orders with @(
         Label: 'Change Status'
     }]
 );
+
+annotate SalesOrderService.Orders with actions {
+    Orders_changeStatus(
+        newStatus @(
+            title: 'New Status',
+            Common.ValueList: {
+                CollectionPath: 'OrderStatusCodes',
+                Parameters: [
+                    { $Type: 'Common.ValueListParameterInOut', LocalDataProperty: newStatus, ValueListProperty: 'code' },
+                    { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name' }
+                ]
+            },
+            Common.ValueListWithFixedValues: true
+        ),
+        comment @title: 'Comment'
+    );
+};
 
 // ── Value Helps ───────────────────────────────────────────────────────────────
 

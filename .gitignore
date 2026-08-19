@@ -12,6 +12,7 @@ credentials.json
 
 # OS / editor
 .DS_Store
+.amazonq/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json

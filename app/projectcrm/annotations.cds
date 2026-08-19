@@ -3,6 +3,11 @@ using AdminService from '../../srv/admin-service';
 // ── Property Labels / Titles ───────────────────────────────────────────────────
 
 annotate AdminService.Customers with {
+    firstName          @title: 'First Name';
+    lastName           @title: 'Last Name';
+    fullName           @title: 'Full Name';
+    email              @title: 'Email';
+    phone              @title: 'Phone';
     statusCode         @title: 'Status';
     statusCode_code    @title: 'Status';
     categoryGroup      @title: 'Category Group';
@@ -48,7 +53,6 @@ annotate AdminService.Interactions with @(
 // ── List Report ──────────────────────────────────────────────────────────────
 
 annotate AdminService.Customers with @(
-    // Использование имен ассоциаций позволяет Fiori лучше подтягивать названия
     UI.SelectionFields: [ statusCode, categoryGroup, averageRating ],
 
     UI.LineItem: [
@@ -91,10 +95,17 @@ annotate AdminService.Customers with @(
         Description: { Value: email }
     },
 
-    UI.HeaderFacets: [{
-        $Type: 'UI.ReferenceFacet',
-        Target: '@UI.FieldGroup#Status'
-    }],
+    UI.HeaderFacets: [
+        {
+            $Type: 'UI.ReferenceFacet',
+            Target: '@UI.FieldGroup#Status'
+        },
+        {
+            $Type: 'UI.ReferenceFacet',
+            Label: 'Top 5 Recent Interactions',
+            Target: 'interactions/@UI.PresentationVariant#Top5Recent'
+        }
+    ],
 
     UI.FieldGroup #Status: {
         Data: [
@@ -210,7 +221,20 @@ annotate AdminService.Interactions with @(
         { Value: method,               Label: 'Method' },
         { Value: summary,              Label: 'Summary' },
         { Value: description,          Label: 'Description' }
-    ]
+    ],
+
+    UI.LineItem #Top5Recent: [
+        { Value: date,                 Label: 'Date' },
+        { Value: interactionType_code, Label: 'Type' },
+        { Value: method,               Label: 'Method' },
+        { Value: summary,              Label: 'Summary' }
+    ],
+
+    UI.PresentationVariant #Top5Recent: {
+        SortOrder: [{ Property: date, Descending: true }],
+        MaxItems: 5,
+        Visualizations: ['@UI.LineItem#Top5Recent']
+    }
 );
 
 annotate AdminService.Interactions with {
