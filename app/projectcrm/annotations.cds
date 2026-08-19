@@ -53,7 +53,6 @@ annotate AdminService.Interactions with @(
 // ── List Report ──────────────────────────────────────────────────────────────
 
 annotate AdminService.Customers with @(
-    // Использование имен ассоциаций позволяет Fiori лучше подтягивать названия
     UI.SelectionFields: [ statusCode, categoryGroup, averageRating ],
 
     UI.LineItem: [

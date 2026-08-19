@@ -39,7 +39,6 @@ annotate SalesOrderService.OrderItems with {
 // ── List Report ───────────────────────────────────────────────────────────────
 
 annotate SalesOrderService.Orders with @(
-    // Для ассоциаций (statusCode, customer, items.mechanicalPart) FilterBar сам возьмет красивый заголовок
     UI.SelectionFields: [ statusCode, orderDate, totalAmount, customer, items.mechanicalPart ],
 
     UI.LineItem: [
@@ -141,6 +140,23 @@ annotate SalesOrderService.Orders with @(
         Label: 'Change Status'
     }]
 );
+
+annotate SalesOrderService.Orders with actions {
+    Orders_changeStatus(
+        newStatus @(
+            title: 'New Status',
+            Common.ValueList: {
+                CollectionPath: 'OrderStatusCodes',
+                Parameters: [
+                    { $Type: 'Common.ValueListParameterInOut', LocalDataProperty: newStatus, ValueListProperty: 'code' },
+                    { $Type: 'Common.ValueListParameterDisplayOnly', ValueListProperty: 'name' }
+                ]
+            },
+            Common.ValueListWithFixedValues: true
+        ),
+        comment @title: 'Comment'
+    );
+};
 
 // ── Value Helps ───────────────────────────────────────────────────────────────
 
