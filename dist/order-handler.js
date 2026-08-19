@@ -23,17 +23,83 @@ async function loadOrder(Orders, orderID) {
 function orderIDFrom(req, data) {
     return data?.ID ?? req.params?.[0]?.ID ?? req.data?.ID;
 }
+async function validateStock(mechanicalPart_ID, quantity, MechanicalParts, req) {
+    if (!mechanicalPart_ID) {
+        return req.error(400, 'Mechanical part is required', 'in/items');
+    }
+    if (quantity == null || Number(quantity) <= 0) {
+        return req.error(400, 'Quantity must be greater than 0', 'in/items');
+    }
+    const part = await SELECT.one.from(MechanicalParts).where({ ID: mechanicalPart_ID });
+    if (!part) {
+        return req.error(404, `Part ${mechanicalPart_ID} not found`, 'in/items');
+    }
+    if (Number(part.quantityInStock) < Number(quantity)) {
+        return req.error(400, `Insufficient stock for "${part.name}". Available: ${part.quantityInStock}`, 'in/items');
+    }
+}
+async function validateOrderItemsStock(items, MechanicalParts, req) {
+    const qtyByPart = new Map();
+    for (const item of items) {
+        if (!item.mechanicalPart_ID)
+            continue;
+        qtyByPart.set(item.mechanicalPart_ID, (qtyByPart.get(item.mechanicalPart_ID) ?? 0) + Number(item.quantity ?? 0));
+    }
+    for (const [partId, totalQty] of qtyByPart) {
+        await validateStock(partId, totalQty, MechanicalParts, req);
+    }
+}
+async function loadOrderItems(orderID, OrderItems, OrderItemDrafts) {
+    const draftItems = OrderItemDrafts
+        ? await SELECT.from(OrderItemDrafts).where({ order_ID: orderID })
+        : [];
+    if (draftItems.length)
+        return draftItems;
+    return SELECT.from(OrderItems).where({ order_ID: orderID });
+}
+async function loadOrderItemByID(itemID, OrderItems, OrderItemDrafts) {
+    if (OrderItemDrafts) {
+        const draftItem = await SELECT.one.from(OrderItemDrafts).where({ ID: itemID });
+        if (draftItem)
+            return draftItem;
+    }
+    return SELECT.one.from(OrderItems).where({ ID: itemID });
+}
 async function default_1() {
     const { Orders, OrderItems } = this.entities;
+    const OrderItemDrafts = OrderItems.drafts;
     const { MechanicalParts, Interaction } = cds_1.default.entities('crm');
     this.before('SAVE', 'Orders', async (req) => {
         const { ID } = req.data;
         if (!ID)
             return;
-        const items = await SELECT.from(OrderItems).where({ order_ID: ID });
+        const items = await loadOrderItems(ID, OrderItems, OrderItemDrafts);
+        await validateOrderItemsStock(items, MechanicalParts, req);
         const total = items.reduce((sum, item) => sum + (item.quantity ?? 0) * (item.price ?? 0), 0);
         req.data.totalAmount = Math.round(total * 100) / 100;
     });
+    const validateOrderItemInput = async (req) => {
+        let { mechanicalPart_ID, quantity } = req.data;
+        if (req.event === 'UPDATE') {
+            const itemID = req.data.ID ?? req.params?.[0]?.ID;
+            if (itemID) {
+                const existing = await loadOrderItemByID(itemID, OrderItems, OrderItemDrafts);
+                if (existing) {
+                    mechanicalPart_ID ??= existing.mechanicalPart_ID;
+                    quantity ??= existing.quantity;
+                }
+            }
+        }
+        if (!mechanicalPart_ID)
+            return;
+        if (quantity == null)
+            return;
+        return validateStock(mechanicalPart_ID, quantity, MechanicalParts, req);
+    };
+    this.before('CREATE', OrderItems, validateOrderItemInput);
+    this.before('UPDATE', OrderItems, validateOrderItemInput);
+    this.before('CREATE', OrderItemDrafts, validateOrderItemInput);
+    this.before('UPDATE', OrderItemDrafts, validateOrderItemInput);
     this.before('UPDATE', 'Orders', async (req) => {
         const ID = orderIDFrom(req, req.data);
         if (!ID || req.data.statusCode_code === undefined)

@@ -46,7 +46,12 @@ annotate SalesOrderService.Orders with @(
         { Value: ID,                  Label: 'Order ID' },
         { Value: orderDate,           Label: 'Order Date' },
         { Value: totalAmount,         Label: 'Total Amount' },
-        { Value: statusCode.name, Label: 'Status' },
+        {
+            Value: statusCode_code,
+            Label: 'Status',
+            Criticality: criticality,
+            CriticalityRepresentation: #WithIcon
+        },
         { Value: customer.fullName, Label: 'Customer' }
     ]
 );
@@ -57,15 +62,34 @@ annotate SalesOrderService.Orders with @(
     UI.HeaderInfo: {
         TypeName: 'Order',
         TypeNamePlural: 'Orders',
-        Title: { Value: customer.fullName }, // Крупный заголовок: имя клиента
-        Description: { Value: ID }           // Мелкий подзаголовок: UUID заказа
+        Title: { Value: customer.fullName },
+        Description: { Value: ID }
+    },
+
+    UI.HeaderFacets: [{
+        $Type: 'UI.ReferenceFacet',
+        Target: '@UI.FieldGroup#Status'
+    }],
+
+    UI.FieldGroup #Status: {
+        Data: [{
+            Value: statusCode_code,
+            Label: 'Status',
+            Criticality: criticality,
+            CriticalityRepresentation: #WithIcon
+        }]
     },
 
     UI.FieldGroup #General: {
         Data: [
-            { Value: orderDate,       Label: 'Order Date' },
-            { Value: totalAmount,     Label: 'Total Amount' },
-            { Value: statusCode_code, Label: 'Status' }
+            { Value: orderDate,   Label: 'Order Date' },
+            { Value: totalAmount, Label: 'Total Amount' },
+            {
+                Value: statusCode_code,
+                Label: 'Status',
+                Criticality: criticality,
+                CriticalityRepresentation: #WithIcon
+            }
         ]
     },
 

@@ -137,6 +137,8 @@ entity MechanicalParts : cuid {
 }
 
 entity OrderStatusCodes {
-    key code : String(20);
-    name     : String(50);
+    key code        : String(20);
+        name        : String(50);
+        colorCode   : String(7);
+        criticality : Integer;
 }
