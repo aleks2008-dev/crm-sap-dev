@@ -31,6 +31,8 @@ modules:
         - coverage/
         - "*.http"
         - "*.mtar"
+        - cf
+        - cf8
         - cf@
         - cf-cli.tgz
         - .crm_sap_dev_mta_build_tmp/
