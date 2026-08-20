@@ -25,6 +25,8 @@ gen/
 .cdsrc-private.json
 
 # CF CLI
+cf
+cf8
 cf-cli.tgz
 
 # MTA build artifacts

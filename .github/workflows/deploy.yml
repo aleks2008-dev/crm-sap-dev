@@ -25,16 +25,19 @@ jobs:
       - name: Test before deploy
         run: npm test
 
-      - name: Install Cloud Foundry CLI
-        run: |
-          curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v8&source=github" | tar -zx
-          sudo mv cf8 /usr/local/bin/cf
-
       - name: Install MTA Build Tool
         run: npm install -g mbt
 
+      - name: Clean CF CLI artifacts from workspace
+        run: rm -f cf cf8 cf-cli.tgz || true
+
       - name: Build MTA archive
         run: mbt build
+
+      - name: Install Cloud Foundry CLI
+        run: |
+          curl -L "https://packages.cloudfoundry.org/stable?release=linux64-binary&version=v8&source=github" | tar -zx -C /tmp
+          sudo mv /tmp/cf8 /usr/local/bin/cf
 
       - name: Login to Cloud Foundry
         env:
