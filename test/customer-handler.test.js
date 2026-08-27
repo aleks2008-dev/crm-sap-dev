@@ -5,6 +5,12 @@ describe('Customer Handler Test Suite', () => {
 
   let customerId;
 
+  const updateCustomerStatus = (customerID) =>
+    POST(
+      `/admin/Customers(customerID=${customerID},IsActiveEntity=true)/AdminService.updateCustomerStatus`,
+      {}
+    );
+
   beforeAll(async () => {
     const { Customer, Feedback, Interaction } = cds.entities('crm');
     customerId = cds.utils.uuid();
@@ -90,9 +96,9 @@ describe('Customer Handler Test Suite', () => {
 
   describe('Action: updateCustomerStatus', () => {
     test('sets Active when recent interaction exists and rating >= 3', async () => {
-      const res = await POST('/admin/updateCustomerStatus', { customerID: customerId });
+      const res = await updateCustomerStatus(customerId);
       expect(res.status).toBe(200);
-      expect(res.data.value).toBe(true);
+      expect(res.data.statusCode_code).toBe('Active');
 
       const { Customer } = cds.entities('crm');
       const updated = await SELECT.one.from(Customer).where({ customerID: customerId });
@@ -109,7 +115,7 @@ describe('Customer Handler Test Suite', () => {
       await INSERT.into(Feedback).entries([{
         ID: cds.utils.uuid(), rating: 2, comments: 'Not good enough', customer_customerID: atRiskId
       }]);
-      const res = await POST('/admin/updateCustomerStatus', { customerID: atRiskId });
+      const res = await updateCustomerStatus(atRiskId);
       expect(res.status).toBe(200);
       const updated = await SELECT.one.from(Customer).where({ customerID: atRiskId });
       expect(updated.statusCode_code).toBe('At-Risk');
@@ -122,7 +128,7 @@ describe('Customer Handler Test Suite', () => {
         customerID: inactiveId, firstName: 'Inactive', lastName: 'User',
         email: 'inactive@example.com', averageRating: 4.0
       }]);
-      const res = await POST('/admin/updateCustomerStatus', { customerID: inactiveId });
+      const res = await updateCustomerStatus(inactiveId);
       expect(res.status).toBe(200);
       const updated = await SELECT.one.from(Customer).where({ customerID: inactiveId });
       expect(updated.statusCode_code).toBe('Inactive');
@@ -131,7 +137,7 @@ describe('Customer Handler Test Suite', () => {
     test('returns 404 for non-existent customer', async () => {
       let error;
       try {
-        await POST('/admin/updateCustomerStatus', { customerID: cds.utils.uuid() });
+        await updateCustomerStatus(cds.utils.uuid());
       } catch (err) {
         error = err;
       }

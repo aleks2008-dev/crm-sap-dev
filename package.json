@@ -12,7 +12,8 @@
     "lint": "eslint \"srv/**/*.ts\" \"test/**/*.js\"",
     "lint:fix": "eslint \"srv/**/*.ts\" \"test/**/*.js\" --fix",
     "watch-projectcrm": "cds watch --open crm.projectcrm/index.html?sap-ui-xx-viewCache=false --livereload false",
-    "watch-project_orders": "cds watch --open projectorders/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-project_orders": "cds watch --open projectorders/index.html?sap-ui-xx-viewCache=false --livereload false",
+    "watch-project_orders_ui5": "cds watch --open projectordersui5/index.html?sap-ui-xx-viewCache=false --livereload false"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

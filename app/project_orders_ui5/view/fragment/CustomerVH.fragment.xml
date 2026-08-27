@@ -1,0 +1,15 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core">
+    <SelectDialog
+        title="Select Customer"
+        search=".onCustomerVHSearch"
+        confirm=".onCustomerVHConfirm"
+        cancel=".onCustomerVHCancel"
+        items="{ path: 'orderModel>/Customers' }">
+        <StandardListItem
+            title="{orderModel>fullName}"
+            description="{orderModel>email}"
+            type="Active" />
+    </SelectDialog>
+</core:FragmentDefinition>

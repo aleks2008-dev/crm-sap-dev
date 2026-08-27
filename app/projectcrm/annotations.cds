@@ -184,8 +184,22 @@ annotate AdminService.Customers with @(
             { Value: categoryGroup_code },
             { Value: averageRating }
         ]
-    }
+    },
+
+    UI.Identification: [{
+        $Type: 'UI.DataFieldForAction',
+        Action: 'AdminService.updateCustomerStatus',
+        Label: 'Update Status'
+    }]
 );
+
+annotate AdminService.Customers with actions {
+    updateCustomerStatus @(
+        Common.SideEffects: {
+            TargetProperties: ['statusCode_code', 'averageRating', 'criticality']
+        }
+    );
+};
 
 // ── Value Helps ───────────────────────────────────────────────────────────────
 

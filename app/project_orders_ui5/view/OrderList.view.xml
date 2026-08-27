@@ -1,0 +1,99 @@
+<mvc:View
+    controllerName="projectordersui5.controller.OrderList"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:fb="sap.ui.comp.filterbar"
+    xmlns:core="sap.ui.core">
+    <Page id="orderListPage" title="{i18n>orderListTitle}" showNavButton="false">
+        <customHeader>
+            <Bar>
+                <contentMiddle>
+                    <Title text="{i18n>orderListTitle}" />
+                </contentMiddle>
+                <contentRight>
+                    <Select id="roleSelect" width="10rem" change=".onRoleChange"
+                        tooltip="Switch demo role for UI visibility">
+                        <core:Item key="CRM-Admin" text="{i18n>roleAdmin}" />
+                        <core:Item key="CRM-Sales" text="{i18n>roleSales}" />
+                        <core:Item key="Warehouse-Manager" text="{i18n>roleWarehouse}" />
+                    </Select>
+                    <Button text="Parts" press=".onNavToParts" tooltip="Open mechanical parts catalog" />
+                    <Button text="{i18n>createOrder}" type="Emphasized" press=".onCreateOrder"
+                        visible="{appView>/canCreateOrder}" tooltip="Create a new order draft" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+        <content>
+            <fb:FilterBar id="filterBar" search=".onSearch" clear=".onClear" showClearOnFB="true">
+                <fb:filterGroupItems>
+                    <fb:FilterGroupItem name="statusCode" label="Status" groupName="G1" visibleInFilterBar="true">
+                        <fb:control>
+                            <ComboBox id="filterStatus" items="{ path: 'orderModel>/OrderStatusCodes' }"
+                                tooltip="Filter by order status">
+                                <core:Item key="{orderModel>code}" text="{orderModel>name}" />
+                            </ComboBox>
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                    <fb:FilterGroupItem name="orderDate" label="Order Date" groupName="G1" visibleInFilterBar="true">
+                        <fb:control>
+                            <DatePicker id="filterOrderDate" tooltip="Filter by order date" />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                    <fb:FilterGroupItem name="totalAmount" label="Total Amount" groupName="G1" visibleInFilterBar="true">
+                        <fb:control>
+                            <Input id="filterTotalAmount" type="Number" tooltip="Filter by minimum total amount" />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                    <fb:FilterGroupItem name="customer" label="Customer" groupName="G1" visibleInFilterBar="true">
+                        <fb:control>
+                            <Input id="filterCustomer" showValueHelp="true" valueHelpRequest=".onCustomerFilterVH"
+                                tooltip="Filter by customer name" />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                    <fb:FilterGroupItem name="mechanicalPart" label="Mechanical Part" groupName="G1" visibleInFilterBar="true">
+                        <fb:control>
+                            <Input id="filterPart" showValueHelp="true" valueHelpRequest=".onPartFilterVH"
+                                tooltip="Filter by mechanical part name" />
+                        </fb:control>
+                    </fb:FilterGroupItem>
+                </fb:filterGroupItems>
+            </fb:FilterBar>
+            <Table id="ordersTable" mode="SingleSelectMaster" growing="true" growingThreshold="20"
+                itemPress=".onOrderPress"
+                items="{
+                    path: 'orderModel>/Orders',
+                    parameters: { $count: true, $filter: 'IsActiveEntity eq true', $expand: 'customer,statusCode' },
+                    sorter: { path: 'orderDate', descending: true }
+                }">
+                <headerToolbar>
+                    <OverflowToolbar>
+                        <Title text="Orders" />
+                        <ToolbarSpacer />
+                        <Button text="{i18n>search}" type="Emphasized" press=".onSearch" />
+                        <Button text="{i18n>clearFilters}" press=".onClear" />
+                    </OverflowToolbar>
+                </headerToolbar>
+                <columns>
+                    <Column><Text text="Order ID" /></Column>
+                    <Column><Text text="Order Date" /></Column>
+                    <Column hAlign="End"><Text text="Total Amount" /></Column>
+                    <Column><Text text="Status" /></Column>
+                    <Column><Text text="Customer" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem type="Navigation">
+                        <cells>
+                            <Text text="{orderModel>ID}" />
+                            <Text text="{ path: 'orderModel>orderDate', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'medium' } }" />
+                            <ObjectNumber number="{ path: 'orderModel>totalAmount', formatter: '.formatter.formatCurrency' }" />
+                            <ObjectStatus
+                                text="{orderModel>statusCode_code}"
+                                state="{ path: 'orderModel>criticality', formatter: '.formatter.formatStatusState' }" />
+                            <Text text="{orderModel>customer/fullName}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>

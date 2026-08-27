@@ -1,0 +1,34 @@
+<mvc:View
+    controllerName="projectordersui5.controller.PartList"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc">
+    <Page title="{i18n>partListTitle}" showNavButton="true" navButtonPress=".onNavBack">
+        <headerContent>
+            <Button text="Orders" press=".onNavToOrders" tooltip="Back to orders list" />
+            <Button text="Create Part" type="Emphasized" press=".onCreatePart"
+                visible="{appView>/canManageParts}" tooltip="Create new mechanical part" />
+        </headerContent>
+        <content>
+            <Table id="partsTable" mode="SingleSelectMaster" growing="true"
+                itemPress=".onPartPress"
+                items="{ path: 'orderModel>/MechanicalParts', sorter: { path: 'name' } }">
+                <columns>
+                    <Column><Text text="Name" /></Column>
+                    <Column><Text text="Description" /></Column>
+                    <Column hAlign="End"><Text text="Price" /></Column>
+                    <Column hAlign="End"><Text text="In Stock" /></Column>
+                </columns>
+                <items>
+                    <ColumnListItem type="Navigation">
+                        <cells>
+                            <Text text="{orderModel>name}" />
+                            <Text text="{orderModel>description}" />
+                            <ObjectNumber number="{ path: 'orderModel>price', formatter: '.formatter.formatCurrency' }" />
+                            <ObjectNumber number="{orderModel>quantityInStock}" />
+                        </cells>
+                    </ColumnListItem>
+                </items>
+            </Table>
+        </content>
+    </Page>
+</mvc:View>
