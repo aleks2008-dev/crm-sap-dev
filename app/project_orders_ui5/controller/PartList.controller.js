@@ -40,7 +40,7 @@ sap.ui.define([
                 description: "",
                 price: 0,
                 quantityInStock: 0
-            });
+            }, { $$updateGroupId: "$direct" });
             oCreateCtx.created().then(function () {
                 this.navTo("partDetail", { partId: oCreateCtx.getProperty("ID") });
             }.bind(this)).catch(function (oError) {

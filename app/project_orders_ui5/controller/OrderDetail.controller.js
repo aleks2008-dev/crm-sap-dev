@@ -2,8 +2,8 @@ sap.ui.define([
     "sap/ui/core/UIComponent",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/m/quickview/QuickView",
-    "sap/m/quickview/QuickViewPage",
+    "sap/m/QuickView",
+    "sap/m/QuickViewPage",
     "projectordersui5/model/formatter",
     "projectordersui5/controller/BaseController"
 ], function (UIComponent, MessageToast, MessageBox, QuickView, QuickViewPage, formatter, BaseController) {
@@ -27,7 +27,11 @@ sap.ui.define([
         },
 
         _orderPath: function () {
-            return "/Orders(ID=" + this._sOrderId + ",IsActiveEntity=" + !this._bIsDraft + ")";
+            var sId = this._sOrderId || "";
+            if (sId && sId.indexOf("'") === -1) {
+                sId = "'" + sId + "'";
+            }
+            return "/Orders(ID=" + sId + ",IsActiveEntity=" + !this._bIsDraft + ")";
         },
 
         _bindOrder: function () {

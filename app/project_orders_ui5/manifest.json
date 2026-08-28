@@ -3,7 +3,10 @@
 	"sap.app": {
 		"id": "projectordersui5",
 		"type": "application",
-		"i18n": "i18n/i18n.properties",
+		"i18n": {
+			"bundleUrl": "i18n/i18n.properties",
+			"supportedLocales": [""]
+		},
 		"title": "{{appTitle}}",
 		"description": "{{appDescription}}",
 		"applicationVersion": {
@@ -30,8 +33,7 @@
 	"sap.ui5": {
 		"rootView": {
 			"viewName": "projectordersui5.view.App",
-			"type": "XML",
-			"id": "app"
+			"type": "XML"
 		},
 		"dependencies": {
 			"minUI5Version": "1.120.0",
@@ -57,7 +59,9 @@
 			"i18n": {
 				"type": "sap.ui.model.resource.ResourceModel",
 				"settings": {
-					"bundleName": "projectordersui5.i18n.i18n"
+					"bundleName": "projectordersui5.i18n.i18n",
+					"supportedLocales": [""],
+					"fallbackLocale": ""
 				}
 			},
 			"orderModel": {
@@ -66,7 +70,7 @@
 					"synchronizationMode": "None",
 					"operationMode": "Server",
 					"autoExpandSelect": true,
-					"earlyRequests": true
+					"earlyRequests": false
 				}
 			}
 		},

@@ -22,7 +22,9 @@ sap.ui.define([
         _onRouteMatched: function () {
             var oRoleSelect = this.byId("roleSelect");
             var sRole = this.getModel("appView").getProperty("/role");
-            oRoleSelect.setSelectedKey(sRole);
+            if (oRoleSelect) {
+                oRoleSelect.setSelectedKey(sRole);
+            }
             this._refreshTable();
         },
 
@@ -37,7 +39,11 @@ sap.ui.define([
         },
 
         _refreshTable: function () {
-            this.byId("ordersTable").getBinding("items").refresh();
+            var oTable = this.byId("ordersTable");
+            var oBinding = oTable && oTable.getBinding("items");
+            if (oBinding) {
+                oBinding.refresh();
+            }
         },
 
         _getBaseFilters: function () {
@@ -98,7 +104,7 @@ sap.ui.define([
             var oCreateCtx = oListBinding.create({
                 orderDate: new Date().toISOString(),
                 statusCode_code: "NEW"
-            });
+            }, { $$updateGroupId: "$direct" });
 
             oCreateCtx.created().then(function () {
                 var sId = oCreateCtx.getProperty("ID");

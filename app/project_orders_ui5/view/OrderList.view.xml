@@ -84,7 +84,7 @@
                     <ColumnListItem type="Navigation">
                         <cells>
                             <Text text="{orderModel>ID}" />
-                            <Text text="{ path: 'orderModel>orderDate', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'medium' } }" />
+                            <Text text="{ path: 'orderModel>orderDate', formatter: '.formatter.formatOrderDate' }" />
                             <ObjectNumber number="{ path: 'orderModel>totalAmount', formatter: '.formatter.formatCurrency' }" />
                             <ObjectStatus
                                 text="{orderModel>statusCode_code}"
