@@ -1,8 +1,8 @@
 sap.ui.define([
     "sap/ui/core/UIComponent",
     "sap/ui/model/json/JSONModel",
-    "sap/ui/model/resource/ResourceModel"
-], function (UIComponent, JSONModel, ResourceModel) {
+    "sap/m/MessageBox"
+], function (UIComponent, JSONModel, MessageBox) {
     "use strict";
 
     return UIComponent.extend("projectordersui5.Component", {
@@ -13,7 +13,21 @@ sap.ui.define([
         init: function () {
             UIComponent.prototype.init.apply(this, arguments);
             this._initAppViewModel();
+            this._attachODataErrors();
             this.getRouter().initialize();
+        },
+
+        _attachODataErrors: function () {
+            var oModel = this.getModel("orderModel");
+            if (!oModel || typeof oModel.attachRequestFailed !== "function") {
+                return;
+            }
+            oModel.attachRequestFailed(function (oEvent) {
+                var oParams = oEvent.getParameters();
+                if (oParams.response && oParams.response.statusCode === 403) {
+                    MessageBox.error("Access denied (403). Check your BTP role collection (CRM-Admin-RC-v2) and re-login.");
+                }
+            });
         },
 
         _initAppViewModel: function () {
