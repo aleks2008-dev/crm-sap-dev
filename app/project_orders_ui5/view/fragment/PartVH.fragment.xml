@@ -2,10 +2,12 @@
     xmlns="sap.m"
     xmlns:core="sap.ui.core">
     <SelectDialog
+        id="partSelectDialog"
         title="Select Mechanical Part"
         search=".onPartVHSearch"
         confirm=".onPartVHConfirm"
         cancel=".onPartVHCancel"
+        confirmButtonText="Select"
         items="{ path: 'orderModel>/MechanicalParts' }">
         <StandardListItem
             title="{orderModel>name}"

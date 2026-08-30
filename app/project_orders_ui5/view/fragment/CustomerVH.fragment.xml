@@ -2,10 +2,12 @@
     xmlns="sap.m"
     xmlns:core="sap.ui.core">
     <SelectDialog
+        id="customerSelectDialog"
         title="Select Customer"
         search=".onCustomerVHSearch"
         confirm=".onCustomerVHConfirm"
         cancel=".onCustomerVHCancel"
+        confirmButtonText="Select"
         items="{ path: 'orderModel>/Customers' }">
         <StandardListItem
             title="{orderModel>fullName}"

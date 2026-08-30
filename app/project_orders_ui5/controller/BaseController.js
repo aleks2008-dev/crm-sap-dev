@@ -1,11 +1,11 @@
 sap.ui.define([
     "sap/ui/core/mvc/Controller",
     "sap/ui/core/UIComponent",
-    "sap/m/MessageToast",
-    "sap/m/MessageBox",
     "sap/ui/core/Fragment",
+    "sap/ui/model/Filter",
+    "sap/ui/model/FilterOperator",
     "projectordersui5/model/formatter"
-], function (Controller, UIComponent, MessageToast, MessageBox, Fragment, formatter) {
+], function (Controller, UIComponent, Fragment, Filter, FilterOperator, formatter) {
     "use strict";
 
     return Controller.extend("projectordersui5.controller.BaseController", {
@@ -23,37 +23,48 @@ sap.ui.define([
             return this.getView().getModel(sName) || this.getOwnerComponent().getModel(sName);
         },
 
-        openCustomerDialog: function (fnConfirm) {
-            if (!this._oCustomerDialog) {
-                this._oCustomerDialog = this.loadFragment({
-                    name: "projectordersui5.view.fragment.CustomerVH"
-                }).then(function (oDialog) {
-                    this.getView().addDependent(oDialog);
-                    this._fnCustomerConfirm = fnConfirm;
-                    return oDialog;
-                }.bind(this));
+        _getFragmentId: function () {
+            return this.getView().getId();
+        },
+
+        _closeFragmentDialog: function (sDialogId) {
+            var oDialog = Fragment.byId(this._getFragmentId(), sDialogId);
+            if (oDialog && typeof oDialog.close === "function") {
+                oDialog.close();
             }
-            this._oCustomerDialog = Promise.resolve(this._oCustomerDialog).then(function (oDialog) {
-                this._fnCustomerConfirm = fnConfirm;
+        },
+
+        openCustomerDialog: function (fnConfirm) {
+            this._fnCustomerConfirm = fnConfirm;
+            if (!this._pCustomerDialog) {
+                this._pCustomerDialog = Fragment.load({
+                    id: this._getFragmentId(),
+                    name: "projectordersui5.view.fragment.CustomerVH",
+                    controller: this
+                });
+            }
+            this._pCustomerDialog.then(function (oDialog) {
+                if (!oDialog.getParent()) {
+                    this.getView().addDependent(oDialog);
+                }
                 oDialog.open();
-                return oDialog;
             }.bind(this));
         },
 
         openPartDialog: function (fnConfirm) {
-            if (!this._oPartDialog) {
-                this._oPartDialog = this.loadFragment({
-                    name: "projectordersui5.view.fragment.PartVH"
-                }).then(function (oDialog) {
-                    this.getView().addDependent(oDialog);
-                    this._fnPartConfirm = fnConfirm;
-                    return oDialog;
-                }.bind(this));
+            this._fnPartConfirm = fnConfirm;
+            if (!this._pPartDialog) {
+                this._pPartDialog = Fragment.load({
+                    id: this._getFragmentId(),
+                    name: "projectordersui5.view.fragment.PartVH",
+                    controller: this
+                });
             }
-            this._oPartDialog = Promise.resolve(this._oPartDialog).then(function (oDialog) {
-                this._fnPartConfirm = fnConfirm;
+            this._pPartDialog.then(function (oDialog) {
+                if (!oDialog.getParent()) {
+                    this.getView().addDependent(oDialog);
+                }
                 oDialog.open();
-                return oDialog;
             }.bind(this));
         },
 
@@ -62,11 +73,11 @@ sap.ui.define([
             if (oItem && this._fnCustomerConfirm) {
                 this._fnCustomerConfirm(oItem.getBindingContext("orderModel").getObject());
             }
-            oEvent.getSource().close();
+            this._closeFragmentDialog("customerSelectDialog");
         },
 
-        onCustomerVHCancel: function (oEvent) {
-            oEvent.getSource().close();
+        onCustomerVHCancel: function () {
+            this._closeFragmentDialog("customerSelectDialog");
         },
 
         onPartVHConfirm: function (oEvent) {
@@ -74,11 +85,31 @@ sap.ui.define([
             if (oItem && this._fnPartConfirm) {
                 this._fnPartConfirm(oItem.getBindingContext("orderModel").getObject());
             }
-            oEvent.getSource().close();
+            this._closeFragmentDialog("partSelectDialog");
         },
 
-        onPartVHCancel: function (oEvent) {
-            oEvent.getSource().close();
+        onPartVHCancel: function () {
+            this._closeFragmentDialog("partSelectDialog");
+        },
+
+        onCustomerVHSearch: function (oEvent) {
+            var sValue = oEvent.getParameter("value");
+            var oBinding = oEvent.getSource().getBinding("items");
+            var aFilters = [];
+            if (sValue) {
+                aFilters.push(new Filter("tolower(fullName)", FilterOperator.Contains, sValue.toLowerCase()));
+            }
+            oBinding.filter(aFilters);
+        },
+
+        onPartVHSearch: function (oEvent) {
+            var sValue = oEvent.getParameter("value");
+            var oBinding = oEvent.getSource().getBinding("items");
+            var aFilters = [];
+            if (sValue) {
+                aFilters.push(new Filter("tolower(name)", FilterOperator.Contains, sValue.toLowerCase()));
+            }
+            oBinding.filter(aFilters);
         }
     });
 });

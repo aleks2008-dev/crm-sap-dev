@@ -46,8 +46,8 @@
                     <VBox class="sapUiSmallMarginEnd">
                         <Label text="Status" />
                         <ObjectStatus
-                            text="{orderModel>statusCode_code}"
-                            state="{ path: 'orderModel>criticality', formatter: '.formatter.formatStatusState' }" />
+                            text="{ parts: [{ path: 'orderModel>statusCode/name' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatStatusName' }"
+                            state="{ parts: [{ path: 'orderModel>criticality' }, { path: 'orderModel>statusCode/criticality' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatOrderStatusState' }" />
                     </VBox>
                     <VBox class="sapUiSmallMarginEnd">
                         <Label text="Total Amount" />
@@ -55,7 +55,7 @@
                     </VBox>
                     <VBox>
                         <Label text="Order Date" />
-                        <Text text="{ path: 'orderModel>orderDate', type: 'sap.ui.model.type.DateTime', formatOptions: { style: 'medium' } }" />
+                        <Text text="{ path: 'orderModel>orderDate', formatter: '.formatter.formatOrderDate' }" />
                     </VBox>
                 </uxap:headerContent>
                 <uxap:sections>
@@ -65,7 +65,12 @@
                                 <f:SimpleForm editable="{= ${appView>/editMode} || ${appView>/isDraft} }" layout="ColumnLayout" columnsM="2" columnsL="2">
                                     <f:content>
                                         <Label text="Order Date" />
-                                        <DateTimePicker value="{orderModel>orderDate}"
+                                        <DateTimePicker
+                                            value="{
+                                                path: 'orderModel>orderDate',
+                                                type: 'sap.ui.model.odata.type.DateTimeOffset',
+                                                constraints: { nullable: true }
+                                            }"
                                             editable="{= ${appView>/editMode} || ${appView>/isDraft} }" />
                                         <Label text="Total Amount" />
                                         <Input value="{orderModel>totalAmount}" editable="false" />
@@ -100,10 +105,14 @@
                                             <ColumnListItem>
                                                 <cells>
                                                     <Text text="{orderModel>mechanicalPart/name}" />
-                                                    <Input value="{orderModel>quantity}" type="Number"
-                                                        editable="{= ${appView>/editMode} || ${appView>/isDraft} }" />
-                                                    <Input value="{orderModel>price}" type="Number"
-                                                        editable="{= ${appView>/editMode} || ${appView>/isDraft} }" />
+                                                    <Input
+                                                        value="{ path: 'orderModel>quantity', type: 'sap.ui.model.odata.type.Int32' }"
+                                                        editable="{= ${appView>/editMode} || ${appView>/isDraft} }"
+                                                        change=".onItemFieldChange" />
+                                                    <Input
+                                                        value="{ path: 'orderModel>price', type: 'sap.ui.model.odata.type.Decimal', constraints: { precision: 15, scale: 2 } }"
+                                                        editable="{= ${appView>/editMode} || ${appView>/isDraft} }"
+                                                        change=".onItemFieldChange" />
                                                     <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteItem"
                                                         visible="{= ${appView>/editMode} || ${appView>/isDraft} }" />
                                                 </cells>
@@ -117,17 +126,26 @@
                     <uxap:ObjectPageSection title="Customer" titleUppercase="false">
                         <uxap:subSections>
                             <uxap:ObjectPageSubSection title="Customer Information">
-                                <f:SimpleForm editable="false" layout="ColumnLayout">
-                                    <f:content>
-                                        <Label text="Full Name" />
-                                        <Link text="{orderModel>customer/fullName}" press=".onCustomerQuickView"
-                                            tooltip="Show customer quick info" />
-                                        <Label text="Email" />
-                                        <Text text="{orderModel>customer/email}" />
-                                        <Label text="Phone" />
-                                        <Text text="{orderModel>customer/phone}" />
-                                    </f:content>
-                                </f:SimpleForm>
+                                <VBox>
+                                    <Toolbar visible="{= ${appView>/editMode} || ${appView>/isDraft} }">
+                                        <ToolbarSpacer />
+                                        <Button text="{i18n>selectCustomer}" icon="sap-icon://customer" press=".onSelectCustomer"
+                                            tooltip="Select customer for this order" />
+                                    </Toolbar>
+                                    <f:SimpleForm editable="false" layout="ColumnLayout">
+                                        <f:content>
+                                            <Label text="Full Name" />
+                                            <Text text="{= ${orderModel>customer/fullName} || 'No customer selected' }" />
+                                            <Label text="Details" />
+                                            <Link text="Quick view" press=".onCustomerQuickView"
+                                                visible="{ path: 'orderModel>customer/fullName', formatter: '.formatter.formatHasText' }" />
+                                            <Label text="Email" />
+                                            <Text text="{orderModel>customer/email}" />
+                                            <Label text="Phone" />
+                                            <Text text="{orderModel>customer/phone}" />
+                                        </f:content>
+                                    </f:SimpleForm>
+                                </VBox>
                             </uxap:ObjectPageSubSection>
                         </uxap:subSections>
                     </uxap:ObjectPageSection>

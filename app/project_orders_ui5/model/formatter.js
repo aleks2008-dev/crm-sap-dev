@@ -1,18 +1,54 @@
 sap.ui.define([], function () {
     "use strict";
 
+    var mStatusStateByCode = {
+        NEW: "None",
+        CONFIRMED: "Information",
+        SHIPPED: "Warning",
+        DELIVERED: "Success",
+        CANCELLED: "Error"
+    };
+
+    function criticalityToState(iCriticality) {
+        var n = Number(iCriticality);
+        if (isNaN(n)) {
+            return "None";
+        }
+        if (n === 3) {
+            return "Success";
+        }
+        if (n === 2) {
+            return "Warning";
+        }
+        if (n === 1) {
+            return "Error";
+        }
+        if (n === 0) {
+            return "Information";
+        }
+        return "None";
+    }
+
     return {
-        formatStatusState: function (iCriticality) {
-            if (iCriticality === 3) {
-                return "Success";
+        formatStatusState: criticalityToState,
+
+        formatOrderStatusState: function (iCriticality, iStatusCriticality, sStatusCode) {
+            var sCode = sStatusCode ? String(sStatusCode).toUpperCase() : "";
+            if (sCode && mStatusStateByCode[sCode]) {
+                return mStatusStateByCode[sCode];
             }
-            if (iCriticality === 2) {
-                return "Warning";
+            var iCrit = iCriticality;
+            if (iCrit === null || iCrit === undefined || iCrit === "") {
+                iCrit = iStatusCriticality;
             }
-            if (iCriticality === 1) {
-                return "Error";
+            if (iCrit !== null && iCrit !== undefined && iCrit !== "") {
+                return criticalityToState(iCrit);
             }
             return "None";
+        },
+
+        formatStatusName: function (sName, sCode) {
+            return sName || sCode || "";
         },
 
         formatDraftFlag: function (bIsDraft) {
@@ -35,6 +71,10 @@ sap.ui.define([], function () {
                 return "";
             }
             return oDate.toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" });
+        },
+
+        formatHasText: function (sValue) {
+            return !!sValue;
         }
     };
 });

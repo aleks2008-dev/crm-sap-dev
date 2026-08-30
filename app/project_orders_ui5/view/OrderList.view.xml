@@ -62,7 +62,7 @@
                 itemPress=".onOrderPress"
                 items="{
                     path: 'orderModel>/Orders',
-                    parameters: { $count: true, $filter: 'IsActiveEntity eq true', $expand: 'customer,statusCode' },
+                    parameters: { $filter: 'IsActiveEntity eq true', $expand: 'customer,statusCode', $$ownRequest: true },
                     sorter: { path: 'orderDate', descending: true }
                 }">
                 <headerToolbar>
@@ -87,8 +87,8 @@
                             <Text text="{ path: 'orderModel>orderDate', formatter: '.formatter.formatOrderDate' }" />
                             <ObjectNumber number="{ path: 'orderModel>totalAmount', formatter: '.formatter.formatCurrency' }" />
                             <ObjectStatus
-                                text="{orderModel>statusCode_code}"
-                                state="{ path: 'orderModel>criticality', formatter: '.formatter.formatStatusState' }" />
+                                text="{ parts: [{ path: 'orderModel>statusCode/name' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatStatusName' }"
+                                state="{ parts: [{ path: 'orderModel>criticality' }, { path: 'orderModel>statusCode/criticality' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatOrderStatusState' }" />
                             <Text text="{orderModel>customer/fullName}" />
                         </cells>
                     </ColumnListItem>

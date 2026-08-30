@@ -64,10 +64,15 @@ sap.ui.define([
         },
 
         onEdit: function () {
+            var oCtx = this._getOrderContext();
+            if (!oCtx) {
+                return;
+            }
             var oModel = this.getModel("orderModel");
-            var oAction = oModel.bindContext(this._orderPath() + "/SalesOrderService.draftEdit");
+            var oAction = oModel.bindContext("SalesOrderService.draftEdit(...)", oCtx);
             oAction.execute().then(function () {
                 this._bIsDraft = true;
+                this._sOrderId = oCtx.getProperty("ID");
                 this.getModel("appView").setProperty("/isDraft", true);
                 this.getModel("appView").setProperty("/editMode", true);
                 this._bindOrder();
@@ -84,10 +89,11 @@ sap.ui.define([
             }
             var oModel = this.getModel("orderModel");
             oModel.submitBatch("$auto").then(function () {
-                var oAction = oModel.bindContext(oCtx.getPath() + "/SalesOrderService.draftActivate");
+                var oAction = oModel.bindContext("SalesOrderService.draftActivate(...)", oCtx);
                 return oAction.execute();
-            }.bind(this)).then(function () {
+            }).then(function () {
                 this._bIsDraft = false;
+                this._sOrderId = oCtx.getProperty("ID");
                 this.getModel("appView").setProperty("/isDraft", false);
                 this.getModel("appView").setProperty("/editMode", false);
                 this._bindOrder();
@@ -141,7 +147,12 @@ sap.ui.define([
         onSelectCustomer: function () {
             this.openCustomerDialog(function (oCustomer) {
                 var oCtx = this._getOrderContext();
-                oCtx.setProperty("customer_customerID", oCustomer.customerID, "$auto");
+                oCtx.setProperty("customer_customerID", oCustomer.customerID, "$direct");
+                oCtx.requestSideEffects(["customer"]).then(function () {
+                    MessageToast.show("Customer selected");
+                }).catch(function (oError) {
+                    MessageBox.error(oError.message || "Failed to update customer");
+                });
             }.bind(this));
         },
 
@@ -150,21 +161,45 @@ sap.ui.define([
                 var oCtx = this._getOrderContext();
                 var oModel = this.getModel("orderModel");
                 var oListBinding = oModel.bindList(oCtx.getPath() + "/items", null, null, null, {
-                    $$updateGroupId: "$auto"
+                    $$updateGroupId: "$direct"
                 });
-                oListBinding.create({
+                var oCreateCtx = oListBinding.create({
                     mechanicalPart_ID: oPart.ID,
                     quantity: 1,
                     price: oPart.price
+                }, { $$updateGroupId: "$direct" });
+                oCreateCtx.created().then(function () {
+                    return oCtx.requestSideEffects(["items", "totalAmount"]);
+                }).then(function () {
+                    MessageToast.show("Item added");
+                }.bind(this)).catch(function (oError) {
+                    MessageBox.error(oError.message || "Failed to add item");
                 });
             }.bind(this));
         },
 
+        onItemFieldChange: function (oEvent) {
+            var oItemCtx = oEvent.getSource().getBindingContext("orderModel");
+            if (!oItemCtx) {
+                return;
+            }
+            var oOrderCtx = this._getOrderContext();
+            if (oOrderCtx) {
+                oOrderCtx.requestSideEffects(["totalAmount"]);
+            }
+        },
+
         onDeleteItem: function (oEvent) {
             var oItemCtx = oEvent.getSource().getBindingContext("orderModel");
-            if (oItemCtx) {
-                oItemCtx.delete();
+            if (!oItemCtx) {
+                return;
             }
+            var oOrderCtx = this._getOrderContext();
+            oItemCtx.delete("$direct").then(function () {
+                return oOrderCtx.requestSideEffects(["items", "totalAmount"]);
+            }).catch(function (oError) {
+                MessageBox.error(oError.message || "Failed to delete item");
+            });
         },
 
         onChangeStatus: function () {
@@ -188,11 +223,11 @@ sap.ui.define([
                 MessageBox.error("Select a new status");
                 return;
             }
+            var oCtx = this._getOrderContext();
             var oModel = this.getModel("orderModel");
-            var sPath = this._orderPath();
-            var oAction = oModel.bindContext(sPath + "/Orders_changeStatus");
+            var oAction = oModel.bindContext("SalesOrderService.Orders_changeStatus(...)", oCtx);
             oAction.setParameter("newStatus", sNewStatus);
-            oAction.setParameter("comment", sComment);
+            oAction.setParameter("comment", sComment || "");
             oAction.execute().then(function () {
                 this._oChangeStatusDialog.close();
                 this.byId("newStatusCombo").setSelectedKey("");
@@ -210,7 +245,11 @@ sap.ui.define([
 
         onCustomerQuickView: function () {
             var oCtx = this._getOrderContext();
-            var oCustomer = oCtx.getObject().customer || {};
+            var oCustomer = (oCtx && oCtx.getObject()) ? (oCtx.getObject().customer || {}) : {};
+            if (!oCustomer.fullName) {
+                MessageToast.show("No customer selected");
+                return;
+            }
             if (!this._oQuickView) {
                 this._oQuickView = new QuickView({ width: "20rem" });
                 this.getView().addDependent(this._oQuickView);
@@ -228,26 +267,6 @@ sap.ui.define([
                 }]
             }));
             this._oQuickView.openBy(this.byId("orderDetailPage"));
-        },
-
-        onCustomerVHSearch: function (oEvent) {
-            var sValue = oEvent.getParameter("value");
-            var oBinding = oEvent.getSource().getBinding("items");
-            var aFilters = [];
-            if (sValue) {
-                aFilters.push(new sap.ui.model.Filter("tolower(fullName)", sap.ui.model.FilterOperator.Contains, sValue.toLowerCase()));
-            }
-            oBinding.filter(aFilters);
-        },
-
-        onPartVHSearch: function (oEvent) {
-            var sValue = oEvent.getParameter("value");
-            var oBinding = oEvent.getSource().getBinding("items");
-            var aFilters = [];
-            if (sValue) {
-                aFilters.push(new sap.ui.model.Filter("tolower(name)", sap.ui.model.FilterOperator.Contains, sValue.toLowerCase()));
-            }
-            oBinding.filter(aFilters);
         }
     });
 });

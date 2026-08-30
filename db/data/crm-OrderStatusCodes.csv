@@ -1,6 +1,6 @@
 code;name;colorCode;criticality
 NEW;New;#808080;0
-CONFIRMED;Confirmed;#0a6ed1;2
+CONFIRMED;Confirmed;#0a6ed1;0
 SHIPPED;Shipped;#e9730c;2
 DELIVERED;Delivered;#107e3e;3
 CANCELLED;Cancelled;#bb0000;1

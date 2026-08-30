@@ -18,9 +18,9 @@
                     <Label text="Description" />
                     <Input value="{orderModel>description}" editable="{appView>/canManageParts}" />
                     <Label text="Price" />
-                    <Input value="{orderModel>price}" type="Number" editable="{appView>/canManageParts}" />
+                    <Input value="{ path: 'orderModel>price', type: 'sap.ui.model.odata.type.Decimal', constraints: { precision: 15, scale: 2 } }" editable="{appView>/canManageParts}" />
                     <Label text="Quantity In Stock" />
-                    <Input value="{orderModel>quantityInStock}" type="Number" editable="{appView>/canManageParts}" />
+                    <Input value="{ path: 'orderModel>quantityInStock', type: 'sap.ui.model.odata.type.Int32' }" editable="{appView>/canManageParts}" />
                 </f:content>
             </f:SimpleForm>
         </content>

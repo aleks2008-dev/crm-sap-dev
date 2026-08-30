@@ -1,6 +1,6 @@
 _schema-version: '3.1'
 ID: crm_sap_dev
-version: 1.0.0
+version: 1.0.3
 description: CRM SAP CAP Application
 
 build-parameters:
