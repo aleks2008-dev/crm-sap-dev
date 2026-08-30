@@ -88,9 +88,13 @@ sap.ui.define([
                 return;
             }
             var oModel = this.getModel("orderModel");
-            oModel.submitBatch("$auto").then(function () {
-                var oAction = oModel.bindContext("SalesOrderService.draftActivate(...)", oCtx);
-                return oAction.execute();
+            var oActivate = oModel.bindContext("SalesOrderService.draftActivate(...)", oCtx);
+            var oSavePromise = oModel.hasPendingChanges()
+                ? oModel.submitBatch("$auto")
+                : Promise.resolve();
+
+            oSavePromise.then(function () {
+                return oActivate.execute();
             }).then(function () {
                 this._bIsDraft = false;
                 this._sOrderId = oCtx.getProperty("ID");

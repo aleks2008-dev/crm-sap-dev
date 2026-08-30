@@ -138,7 +138,7 @@
                                             <Text text="{= ${orderModel>customer/fullName} || 'No customer selected' }" />
                                             <Label text="Details" />
                                             <Link text="Quick view" press=".onCustomerQuickView"
-                                                visible="{ path: 'orderModel>customer/fullName', formatter: '.formatter.formatHasText' }" />
+                                                visible="{= !!${orderModel>customer/fullName} }" />
                                             <Label text="Email" />
                                             <Text text="{orderModel>customer/email}" />
                                             <Label text="Phone" />
