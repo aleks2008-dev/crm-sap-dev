@@ -15,6 +15,7 @@ sap.ui.define([
 
         onInit: function () {
             this._sFilterPartId = "";
+            this._sFilterCustomerId = "";
             var oRouter = UIComponent.getRouterFor(this);
             oRouter.getRoute("orderList").attachPatternMatched(this._onRouteMatched, this);
         },
@@ -56,7 +57,6 @@ sap.ui.define([
             var oDate = this.byId("filterOrderDate").getDateValue();
             var sAmount = this.byId("filterTotalAmount").getValue();
             var sCustomer = this.byId("filterCustomer").getValue();
-            var sPart = this.byId("filterPart").getValue();
 
             if (sStatus) {
                 aFilters.push(new Filter("statusCode_code", FilterOperator.EQ, sStatus));
@@ -67,11 +67,18 @@ sap.ui.define([
             if (sAmount) {
                 aFilters.push(new Filter("totalAmount", FilterOperator.GE, Number(sAmount)));
             }
-            if (sCustomer) {
-                aFilters.push(new Filter("tolower(customer/fullName)", FilterOperator.Contains, sCustomer.toLowerCase()));
+            if (this._sFilterCustomerId) {
+                aFilters.push(new Filter("customer_customerID", FilterOperator.EQ, this._sFilterCustomerId));
+            } else if (sCustomer) {
+                aFilters.push(new Filter("customer/fullName", FilterOperator.Contains, sCustomer));
             }
             if (this._sFilterPartId) {
-                aFilters.push(new Filter("items/any(i:i/mechanicalPart_ID eq " + this._sFilterPartId + ")", FilterOperator.EQ, true));
+                aFilters.push(new Filter({
+                    path: "items",
+                    operator: FilterOperator.Any,
+                    variable: "i",
+                    condition: new Filter("i/mechanicalPart_ID", FilterOperator.EQ, this._sFilterPartId)
+                }));
             }
             return aFilters;
         },
@@ -87,6 +94,7 @@ sap.ui.define([
             this.byId("filterTotalAmount").setValue("");
             this.byId("filterCustomer").setValue("");
             this.byId("filterPart").setValue("");
+            this._sFilterCustomerId = "";
             this._sFilterPartId = "";
             this.byId("ordersTable").getBinding("items").filter(this._getBaseFilters());
         },
@@ -116,6 +124,7 @@ sap.ui.define([
 
         onCustomerFilterVH: function () {
             this.openCustomerDialog(function (oCustomer) {
+                this._sFilterCustomerId = oCustomer.customerID || "";
                 this.byId("filterCustomer").setValue(oCustomer.fullName || "");
             }.bind(this));
         },

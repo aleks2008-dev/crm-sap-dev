@@ -1,6 +1,6 @@
 _schema-version: '3.1'
 ID: crm_sap_dev
-version: 1.0.5
+version: 1.0.7
 description: CRM SAP CAP Application
 
 build-parameters:
@@ -71,7 +71,7 @@ modules:
     build-parameters:
       builder: custom
       commands:
-        - echo "1.0.5" > project_orders_ui5/DEPLOY_VERSION
+        - echo "1.0.7" > project_orders_ui5/DEPLOY_VERSION
       ignore:
         - node_modules/
         - default-env.json
