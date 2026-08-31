@@ -45,9 +45,12 @@
                 <uxap:headerContent>
                     <VBox class="sapUiSmallMarginEnd">
                         <Label text="Status" />
-                        <ObjectStatus
-                            text="{ parts: [{ path: 'orderModel>statusCode/name' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatStatusName' }"
-                            state="{ parts: [{ path: 'orderModel>criticality' }, { path: 'orderModel>statusCode/criticality' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatOrderStatusState' }" />
+                        <HBox alignItems="Center">
+                            <ObjectStatus
+                                text="{ parts: [{ path: 'orderModel>statusCode/name' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatStatusName' }"
+                                state="{ parts: [{ path: 'orderModel>criticality' }, { path: 'orderModel>statusCode/criticality' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatOrderStatusState' }" />
+                            <Link icon="sap-icon://hint" press=".onStatusQuickView" tooltip="Status details" />
+                        </HBox>
                     </VBox>
                     <VBox class="sapUiSmallMarginEnd">
                         <Label text="Total Amount" />
@@ -104,7 +107,11 @@
                                         <items>
                                             <ColumnListItem>
                                                 <cells>
-                                                    <Text text="{orderModel>mechanicalPart/name}" />
+                                                    <Link
+                                                        text="{orderModel>mechanicalPart/name}"
+                                                        press=".onPartQuickView"
+                                                        visible="{= !!${orderModel>mechanicalPart/name} }"
+                                                        tooltip="Part details" />
                                                     <Input
                                                         value="{ path: 'orderModel>quantity', type: 'sap.ui.model.odata.type.Int32' }"
                                                         editable="{= ${appView>/editMode} || ${appView>/isDraft} }"

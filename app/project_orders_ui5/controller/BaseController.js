@@ -4,8 +4,11 @@ sap.ui.define([
     "sap/ui/core/Fragment",
     "sap/ui/model/Filter",
     "sap/ui/model/FilterOperator",
+    "sap/m/MessageToast",
+    "sap/m/QuickView",
+    "sap/m/QuickViewPage",
     "projectordersui5/model/formatter"
-], function (Controller, UIComponent, Fragment, Filter, FilterOperator, formatter) {
+], function (Controller, UIComponent, Fragment, Filter, FilterOperator, MessageToast, QuickView, QuickViewPage, formatter) {
     "use strict";
 
     return Controller.extend("projectordersui5.controller.BaseController", {
@@ -110,6 +113,69 @@ sap.ui.define([
                 aFilters.push(new Filter("tolower(name)", FilterOperator.Contains, sValue.toLowerCase()));
             }
             oBinding.filter(aFilters);
+        },
+
+        _showQuickView: function (oAnchor, oPageConfig) {
+            if (!this._oQuickView) {
+                this._oQuickView = new QuickView({ width: "20rem" });
+                this.getView().addDependent(this._oQuickView);
+            }
+            this._oQuickView.destroyPages();
+            this._oQuickView.addPage(new QuickViewPage(oPageConfig));
+            this._oQuickView.openBy(oAnchor);
+        },
+
+        _openCustomerQuickView: function (oAnchor, oCustomer) {
+            if (!oCustomer || !oCustomer.fullName) {
+                MessageToast.show("No customer selected");
+                return;
+            }
+            this._showQuickView(oAnchor, {
+                title: oCustomer.fullName || "Customer",
+                description: oCustomer.email || "",
+                groups: [{
+                    heading: "Contact",
+                    elements: [
+                        { label: "Email", value: oCustomer.email || "" },
+                        { label: "Phone", value: oCustomer.phone || "" }
+                    ]
+                }]
+            });
+        },
+
+        _openStatusQuickView: function (oAnchor, oOrder) {
+            if (!oOrder) {
+                return;
+            }
+            var oStatus = oOrder.statusCode || {};
+            this._showQuickView(oAnchor, {
+                title: oStatus.name || oOrder.statusCode_code || "Status",
+                groups: [{
+                    heading: "Status",
+                    elements: [
+                        { label: "Code", value: oOrder.statusCode_code || "" },
+                        { label: "Name", value: oStatus.name || "" }
+                    ]
+                }]
+            });
+        },
+
+        _openPartQuickView: function (oAnchor, oPart) {
+            if (!oPart || !oPart.name) {
+                MessageToast.show("No part selected");
+                return;
+            }
+            this._showQuickView(oAnchor, {
+                title: oPart.name || "Part",
+                description: oPart.description || "",
+                groups: [{
+                    heading: "Details",
+                    elements: [
+                        { label: "Price", value: this.formatter.formatCurrency(oPart.price) },
+                        { label: "In Stock", value: oPart.quantityInStock != null ? String(oPart.quantityInStock) : "" }
+                    ]
+                }]
+            });
         }
     });
 });

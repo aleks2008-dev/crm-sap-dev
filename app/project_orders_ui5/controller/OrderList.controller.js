@@ -134,6 +134,22 @@ sap.ui.define([
                 this.byId("filterPart").setValue(oPart.name || "");
                 this._sFilterPartId = oPart.ID || "";
             }.bind(this));
+        },
+
+        onCustomerQuickView: function (oEvent) {
+            var oCtx = oEvent.getSource().getBindingContext("orderModel");
+            if (!oCtx) {
+                return;
+            }
+            this._openCustomerQuickView(oEvent.getSource(), oCtx.getObject().customer || {});
+        },
+
+        onStatusQuickView: function (oEvent) {
+            var oCtx = oEvent.getSource().getBindingContext("orderModel");
+            if (!oCtx) {
+                return;
+            }
+            this._openStatusQuickView(oEvent.getSource(), oCtx.getObject());
         }
     });
 });

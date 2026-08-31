@@ -86,10 +86,17 @@
                             <Text text="{orderModel>ID}" />
                             <Text text="{ path: 'orderModel>orderDate', formatter: '.formatter.formatOrderDate' }" />
                             <ObjectNumber number="{ path: 'orderModel>totalAmount', formatter: '.formatter.formatCurrency' }" />
-                            <ObjectStatus
-                                text="{ parts: [{ path: 'orderModel>statusCode/name' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatStatusName' }"
-                                state="{ parts: [{ path: 'orderModel>criticality' }, { path: 'orderModel>statusCode/criticality' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatOrderStatusState' }" />
-                            <Text text="{orderModel>customer/fullName}" />
+                            <HBox alignItems="Center">
+                                <ObjectStatus
+                                    text="{ parts: [{ path: 'orderModel>statusCode/name' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatStatusName' }"
+                                    state="{ parts: [{ path: 'orderModel>criticality' }, { path: 'orderModel>statusCode/criticality' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatOrderStatusState' }" />
+                                <Link icon="sap-icon://hint" press=".onStatusQuickView" tooltip="Status details" />
+                            </HBox>
+                            <Link
+                                text="{orderModel>customer/fullName}"
+                                press=".onCustomerQuickView"
+                                visible="{= !!${orderModel>customer/fullName} }"
+                                tooltip="Customer details" />
                         </cells>
                     </ColumnListItem>
                 </items>

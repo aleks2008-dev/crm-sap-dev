@@ -2,11 +2,9 @@ sap.ui.define([
     "sap/ui/core/UIComponent",
     "sap/m/MessageToast",
     "sap/m/MessageBox",
-    "sap/m/QuickView",
-    "sap/m/QuickViewPage",
     "projectordersui5/model/formatter",
     "projectordersui5/controller/BaseController"
-], function (UIComponent, MessageToast, MessageBox, QuickView, QuickViewPage, formatter, BaseController) {
+], function (UIComponent, MessageToast, MessageBox, formatter, BaseController) {
     "use strict";
 
     return BaseController.extend("projectordersui5.controller.OrderDetail", {
@@ -247,30 +245,28 @@ sap.ui.define([
             this._oChangeStatusDialog.close();
         },
 
-        onCustomerQuickView: function () {
+        onCustomerQuickView: function (oEvent) {
+            var oAnchor = oEvent && oEvent.getSource ? oEvent.getSource() : this.byId("orderDetailPage");
             var oCtx = this._getOrderContext();
             var oCustomer = (oCtx && oCtx.getObject()) ? (oCtx.getObject().customer || {}) : {};
-            if (!oCustomer.fullName) {
-                MessageToast.show("No customer selected");
+            this._openCustomerQuickView(oAnchor, oCustomer);
+        },
+
+        onStatusQuickView: function (oEvent) {
+            var oCtx = this._getOrderContext();
+            if (!oCtx) {
                 return;
             }
-            if (!this._oQuickView) {
-                this._oQuickView = new QuickView({ width: "20rem" });
-                this.getView().addDependent(this._oQuickView);
+            this._openStatusQuickView(oEvent.getSource(), oCtx.getObject());
+        },
+
+        onPartQuickView: function (oEvent) {
+            var oItemCtx = oEvent.getSource().getBindingContext("orderModel");
+            if (!oItemCtx) {
+                return;
             }
-            this._oQuickView.destroyPages();
-            this._oQuickView.addPage(new QuickViewPage({
-                title: oCustomer.fullName || "Customer",
-                description: oCustomer.email || "",
-                groups: [{
-                    heading: "Contact",
-                    elements: [
-                        { label: "Email", value: oCustomer.email || "" },
-                        { label: "Phone", value: oCustomer.phone || "" }
-                    ]
-                }]
-            }));
-            this._oQuickView.openBy(this.byId("orderDetailPage"));
+            var oItem = oItemCtx.getObject();
+            this._openPartQuickView(oEvent.getSource(), oItem.mechanicalPart || {});
         }
     });
 });
