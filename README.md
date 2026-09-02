@@ -73,8 +73,9 @@ After deployment, assign a role collection in BTP (see [Authorization](#authoriz
 
 | App | URL |
 |-----|-----|
-| CRM | https://f0a4dd9etrial-dev-crm-sap-dev-app.cfapps.us10-001.hana.ondemand.com/projectcrm/index.html |
-| Orders | https://f0a4dd9etrial-dev-crm-sap-dev-app.cfapps.us10-001.hana.ondemand.com/project_orders/index.html |
+| CRM | https://d1de13adtrial-dev-crm-sap-dev-app.cfapps.us10-001.hana.ondemand.com/projectcrm/index.html |
+| Orders (Fiori Elements) | https://d1de13adtrial-dev-crm-sap-dev-app.cfapps.us10-001.hana.ondemand.com/project_orders/index.html |
+| Orders (Freestyle UI5) | https://d1de13adtrial-dev-crm-sap-dev-app.cfapps.us10-001.hana.ondemand.com/project_orders_ui5/index.html |
 
 ## Project structure
 
@@ -86,7 +87,8 @@ srv/
   handlers/                TypeScript event handlers (compiled to dist/)
 app/
   projectcrm/              CRM Fiori application
-  project_orders/          Orders Fiori application
+  project_orders/          Orders Fiori Elements application
+  project_orders_ui5/      Orders Freestyle SAPUI5 application
   xs-app.json              Approuter routes and auth
 test/                      Backend tests (Jest + @cap-js/cds-test)
 mta.yaml                   Multi-target application descriptor
@@ -138,7 +140,10 @@ Open a specific UI directly:
 ```bash
 npm run watch-projectcrm
 npm run watch-project_orders
+npm run watch-project_orders_ui5
 ```
+
+Freestyle UI5 demo roles (local): use the role dropdown in the app header, or `?role=admin|sales|warehouse`.
 
 Compile TypeScript handlers before production build:
 
@@ -220,13 +225,16 @@ The MTA archive bundles three modules: CAP server (`crm_sap_dev-srv`), HANA depl
 | [ci.yml](.github/workflows/ci.yml) | Push / PR to `main` or `dev` | `npm ci` → lint → test |
 | [deploy.yml](.github/workflows/deploy.yml) | Push to `main`, manual dispatch | test → `mbt build` → `cf deploy` |
 
-For automated deployment, configure these GitHub repository secrets:
+For automated deployment, configure these GitHub repository secrets
+(**Settings → Secrets and variables → Actions → New repository secret**):
 
-- `CF_API`
-- `CF_USERNAME`
-- `CF_PASSWORD`
-- `CF_ORG`
-- `CF_SPACE`
+| Secret | Example / where to find |
+|--------|-------------------------|
+| `CF_API` | `https://api.cf.eu10.hana.ondemand.com` (region from BTP subaccount → Cloud Foundry → API endpoint) |
+| `CF_USERNAME` | Your BTP / Cloud Foundry login email |
+| `CF_PASSWORD` | Your BTP password |
+| `CF_ORG` | Cloud Foundry org name (`cf orgs`) |
+| `CF_SPACE` | Target space name, e.g. `dev` (`cf spaces`) |
 
 ## Data model
 

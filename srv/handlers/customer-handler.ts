@@ -12,6 +12,11 @@ const INTERACTION_TYPE = {
 
 type FeedbackRow = { rating?: number | null; comments?: string | null };
 
+function customerIDFrom(req: Request): string | undefined {
+    const keys = req.params?.[0] as { customerID?: string } | undefined;
+    return keys?.customerID ?? req.data?.customerID;
+}
+
 function validateFeedback(feedback: FeedbackRow, req: Request) {
     if (feedback.rating !== undefined && feedback.rating !== null) {
         if (feedback.rating < 1 || feedback.rating > 5) {
@@ -174,15 +179,17 @@ export default async function (this: Service) {
         }
     });
 
-    this.on('updateCustomerStatus', async (req: Request) => {
-        const { customerID } = req.data;
+    this.on('updateCustomerStatus', 'Customers', async (req: Request) => {
+        const customerID = customerIDFrom(req);
 
         try {
+            if (!customerID) return req.error(400, 'Customer ID is required');
+
             const customer = await SELECT.one.from(Customer).where({ customerID });
             if (!customer) return req.error(404, `Customer with ID ${customerID} not found`);
 
-            const { targetStatus } = await recalculateCustomerMetrics(customerID, { Customer, Feedback, Interaction });
-            return targetStatus === customer.statusCode_code || true;
+            await recalculateCustomerMetrics(customerID, { Customer, Feedback, Interaction });
+            return SELECT.one.from(this.entities.Customers).where({ customerID });
         } catch (error) {
             console.error('Error updating customer status:', error);
             return req.error(500, 'Failed to update customer status.');

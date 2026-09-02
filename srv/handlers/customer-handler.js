@@ -89,6 +89,11 @@ async function logFeedbackInteractions(customerID, { Feedback, Interaction }) {
     }
 }
 
+function customerIDFrom(req) {
+    const keys = req.params?.[0];
+    return keys?.customerID ?? req.data?.customerID;
+}
+
 module.exports = async function () {
     const entities = cds.entities('crm');
     const { Customer, Feedback, Interaction } = entities;
@@ -164,15 +169,17 @@ module.exports = async function () {
         }
     });
 
-    this.on('updateCustomerStatus', async (req) => {
-        const { customerID } = req.data;
+    this.on('updateCustomerStatus', 'Customers', async (req) => {
+        const customerID = customerIDFrom(req);
 
         try {
+            if (!customerID) return req.error(400, 'Customer ID is required');
+
             const customer = await SELECT.one.from(Customer).where({ customerID });
             if (!customer) return req.error(404, `Customer with ID ${customerID} not found`);
 
             await recalculateCustomerMetrics(customerID, { Customer, Feedback, Interaction });
-            return true;
+            return SELECT.one.from(this.entities.Customers).where({ customerID });
         } catch (error) {
             console.error('Error updating customer status:', error);
             return req.error(500, 'Failed to update customer status.');

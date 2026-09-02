@@ -41,6 +41,12 @@
       "authenticationType": "xsuaa"
     },
     {
+      "source": "^/project_orders_ui5/(.*)$",
+      "target": "/project_orders_ui5/$1",
+      "localDir": ".",
+      "authenticationType": "xsuaa"
+    },
+    {
       "source": "^/(.*)$",
       "target": "/$1",
       "localDir": ".",

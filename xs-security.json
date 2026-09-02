@@ -3,7 +3,7 @@
   "tenant-mode": "dedicated",
   "oauth2-configuration": {
     "redirect-uris": [
-      "https://f0a4dd9etrial-dev-crm-sap-dev-app.cfapps.us10-001.hana.ondemand.com/**"
+      "https://d1de13adtrial-dev-crm-sap-dev-app.cfapps.us10-001.hana.ondemand.com/**"
     ]
   },
   "scopes": [

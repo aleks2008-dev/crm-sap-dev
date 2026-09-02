@@ -13,6 +13,10 @@ const CUSTOMER_STATUS = {
 const INTERACTION_TYPE = {
     FEEDBACK: 'Feedback'
 };
+function customerIDFrom(req) {
+    const keys = req.params?.[0];
+    return keys?.customerID ?? req.data?.customerID;
+}
 function validateFeedback(feedback, req) {
     if (feedback.rating !== undefined && feedback.rating !== null) {
         if (feedback.rating < 1 || feedback.rating > 5) {
@@ -154,14 +158,16 @@ async function default_1() {
             return req.error(500, 'Failed to recalculate average rating.');
         }
     });
-    this.on('updateCustomerStatus', async (req) => {
-        const { customerID } = req.data;
+    this.on('updateCustomerStatus', 'Customers', async (req) => {
+        const customerID = customerIDFrom(req);
         try {
+            if (!customerID)
+                return req.error(400, 'Customer ID is required');
             const customer = await SELECT.one.from(Customer).where({ customerID });
             if (!customer)
                 return req.error(404, `Customer with ID ${customerID} not found`);
-            const { targetStatus } = await recalculateCustomerMetrics(customerID, { Customer, Feedback, Interaction });
-            return targetStatus === customer.statusCode_code || true;
+            await recalculateCustomerMetrics(customerID, { Customer, Feedback, Interaction });
+            return SELECT.one.from(this.entities.Customers).where({ customerID });
         }
         catch (error) {
             console.error('Error updating customer status:', error);

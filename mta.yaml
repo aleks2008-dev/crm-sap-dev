@@ -1,6 +1,6 @@
 _schema-version: '3.1'
 ID: crm_sap_dev
-version: 1.0.0
+version: 1.0.8
 description: CRM SAP CAP Application
 
 build-parameters:
@@ -58,19 +58,23 @@ modules:
     requires:
       - name: crm_sap_dev-db-v2
 
-  # --- Frontend: Fiori app ---
+  # --- Frontend: Approuter ---
   - name: crm_sap_dev-app
     type: approuter.nodejs
     path: app
+    properties:
+      TENANT_HOST_PATTERN: '(.*)-${space}-crm-sap-dev-app.${default-domain}'
     parameters:
-      memory: 128M
-      disk-quota: 512M
+      memory: 256M
+      disk-quota: 1024M
+      buildpack: nodejs_buildpack
     build-parameters:
       builder: custom
       commands:
-        - npm install
+        - echo "1.0.8" > project_orders_ui5/DEPLOY_VERSION
       ignore:
         - node_modules/
+        - default-env.json
     requires:
       - name: crm_sap_dev-auth
       - name: srv-api

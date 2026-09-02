@@ -13,6 +13,9 @@ service AdminService @(odata:'/admin', impl: './handlers/customer-handler') {
         statusCode : redirected to StatusCodes,
         statusCode.criticality as criticality,
         categoryGroup : redirected to CategoryGroups,
+    } actions {
+        @restrict: [{ grant: '*', to: 'CRM-Admin' }]
+        action updateCustomerStatus() returns Customers;
     };
 
     @restrict: [
@@ -99,9 +102,6 @@ service AdminService @(odata:'/admin', impl: './handlers/customer-handler') {
         { grant: '*',    to: 'CRM-Admin' }
     ]
     entity CategoryGroups as projection on db.CustomerCategoryGroup;
-
-    @restrict: [{ grant: '*', to: 'CRM-Admin' }]
-    action updateCustomerStatus(customerID : UUID) returns Boolean;
 
     @restrict: [{ grant: '*', to: ['CRM-Admin', 'CRM-Sales'] }]
     action calculateAverageRating(customerID : UUID) returns Decimal(3,2);

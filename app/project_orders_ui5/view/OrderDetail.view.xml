@@ -1,0 +1,163 @@
+<mvc:View
+    controllerName="projectordersui5.controller.OrderDetail"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:uxap="sap.uxap"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core">
+    <Page id="orderDetailPage" showNavButton="true" navButtonPress=".onNavBack">
+        <customHeader>
+            <Bar>
+                <contentLeft>
+                    <Button icon="sap-icon://nav-back" press=".onNavBack" tooltip="Back to order list" />
+                </contentLeft>
+                <contentMiddle>
+                    <Title text="{= ${orderModel>customer/fullName} || 'Order' }" />
+                </contentMiddle>
+                <contentRight>
+                    <Button text="{i18n>editOrder}" press=".onEdit" visible="{= ${appView>/canEditOrder} &amp;&amp; !${appView>/editMode} &amp;&amp; !${appView>/isDraft} }"
+                        tooltip="Edit this order (creates draft)" />
+                    <Button text="{i18n>saveOrder}" type="Emphasized" press=".onSave"
+                        visible="{= ${appView>/editMode} || ${appView>/isDraft} }" tooltip="Save and activate order" />
+                    <Button text="{i18n>cancelEdit}" press=".onCancelEdit"
+                        visible="{= ${appView>/editMode} || ${appView>/isDraft} }" tooltip="Discard draft changes" />
+                    <Button text="{i18n>changeStatus}" press=".onChangeStatus"
+                        visible="{= ${appView>/canChangeStatus} &amp;&amp; !${appView>/editMode} &amp;&amp; !${appView>/isDraft} }"
+                        tooltip="Change order status via business action" />
+                    <Button text="{i18n>deleteOrder}" press=".onDelete"
+                        visible="{= ${appView>/canEditOrder} &amp;&amp; !${appView>/isDraft} }" tooltip="Delete active order" />
+                </contentRight>
+            </Bar>
+        </customHeader>
+        <content>
+            <uxap:ObjectPageLayout id="orderObjectPage" upperCaseAnchorBar="false">
+                <uxap:headerTitle>
+                    <uxap:ObjectPageHeader
+                        objectTitle="{orderModel>customer/fullName}"
+                        objectSubtitle="{orderModel>ID}"
+                        isObjectIconAlwaysVisible="false">
+                        <uxap:actions>
+                            <uxap:ObjectPageHeaderActionButton text="{i18n>changeStatus}" press=".onChangeStatus"
+                                visible="{= ${appView>/canChangeStatus} &amp;&amp; !${appView>/editMode} &amp;&amp; !${appView>/isDraft} }" />
+                        </uxap:actions>
+                    </uxap:ObjectPageHeader>
+                </uxap:headerTitle>
+                <uxap:headerContent>
+                    <VBox class="sapUiSmallMarginEnd">
+                        <Label text="Status" />
+                        <HBox alignItems="Center">
+                            <ObjectStatus
+                                text="{ parts: [{ path: 'orderModel>statusCode/name' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatStatusName' }"
+                                state="{ parts: [{ path: 'orderModel>criticality' }, { path: 'orderModel>statusCode/criticality' }, { path: 'orderModel>statusCode_code' }], formatter: '.formatter.formatOrderStatusState' }" />
+                            <Link icon="sap-icon://hint" press=".onStatusQuickView" tooltip="Status details" />
+                        </HBox>
+                    </VBox>
+                    <VBox class="sapUiSmallMarginEnd">
+                        <Label text="Total Amount" />
+                        <ObjectNumber number="{ path: 'orderModel>totalAmount', formatter: '.formatter.formatCurrency' }" />
+                    </VBox>
+                    <VBox>
+                        <Label text="Order Date" />
+                        <Text text="{ path: 'orderModel>orderDate', formatter: '.formatter.formatOrderDate' }" />
+                    </VBox>
+                </uxap:headerContent>
+                <uxap:sections>
+                    <uxap:ObjectPageSection title="Order Details" titleUppercase="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection title="General">
+                                <f:SimpleForm editable="{= ${appView>/editMode} || ${appView>/isDraft} }" layout="ColumnLayout" columnsM="2" columnsL="2">
+                                    <f:content>
+                                        <Label text="Order Date" />
+                                        <DateTimePicker
+                                            value="{
+                                                path: 'orderModel>orderDate',
+                                                type: 'sap.ui.model.odata.type.DateTimeOffset',
+                                                constraints: { nullable: true }
+                                            }"
+                                            editable="{= ${appView>/editMode} || ${appView>/isDraft} }" />
+                                        <Label text="Total Amount" />
+                                        <Input value="{orderModel>totalAmount}" editable="false" />
+                                        <Label text="Status" />
+                                        <Input value="{orderModel>statusCode_code}" editable="false" />
+                                        <Label text="Customer" />
+                                        <Input value="{orderModel>customer/fullName}" editable="false"
+                                            showValueHelp="{= ${appView>/editMode} || ${appView>/isDraft} }"
+                                            valueHelpRequest=".onSelectCustomer" tooltip="Select customer for this order" />
+                                    </f:content>
+                                </f:SimpleForm>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                    <uxap:ObjectPageSection title="Order Items" titleUppercase="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection title="Items">
+                                <VBox>
+                                    <Toolbar visible="{= ${appView>/editMode} || ${appView>/isDraft} }">
+                                        <ToolbarSpacer />
+                                        <Button text="{i18n>addItem}" icon="sap-icon://add" press=".onAddItem"
+                                            visible="{appView>/canEditOrder}" tooltip="Add mechanical part line" />
+                                    </Toolbar>
+                                    <Table id="itemsTable" items="{ path: 'orderModel>items', templateShareable: false }">
+                                        <columns>
+                                            <Column><Text text="Part" /></Column>
+                                            <Column><Text text="Quantity" /></Column>
+                                            <Column hAlign="End"><Text text="Price" /></Column>
+                                            <Column width="4rem" visible="{= ${appView>/editMode} || ${appView>/isDraft} }" />
+                                        </columns>
+                                        <items>
+                                            <ColumnListItem>
+                                                <cells>
+                                                    <Link
+                                                        text="{orderModel>mechanicalPart/name}"
+                                                        press=".onPartQuickView"
+                                                        visible="{= !!${orderModel>mechanicalPart/name} }"
+                                                        tooltip="Part details" />
+                                                    <Input
+                                                        value="{ path: 'orderModel>quantity', type: 'sap.ui.model.odata.type.Int32' }"
+                                                        editable="{= ${appView>/editMode} || ${appView>/isDraft} }"
+                                                        change=".onItemFieldChange" />
+                                                    <Input
+                                                        value="{ path: 'orderModel>price', type: 'sap.ui.model.odata.type.Decimal', constraints: { precision: 15, scale: 2 } }"
+                                                        editable="{= ${appView>/editMode} || ${appView>/isDraft} }"
+                                                        change=".onItemFieldChange" />
+                                                    <Button icon="sap-icon://delete" type="Transparent" press=".onDeleteItem"
+                                                        visible="{= ${appView>/editMode} || ${appView>/isDraft} }" />
+                                                </cells>
+                                            </ColumnListItem>
+                                        </items>
+                                    </Table>
+                                </VBox>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                    <uxap:ObjectPageSection title="Customer" titleUppercase="false">
+                        <uxap:subSections>
+                            <uxap:ObjectPageSubSection title="Customer Information">
+                                <VBox>
+                                    <Toolbar visible="{= ${appView>/editMode} || ${appView>/isDraft} }">
+                                        <ToolbarSpacer />
+                                        <Button text="{i18n>selectCustomer}" icon="sap-icon://customer" press=".onSelectCustomer"
+                                            tooltip="Select customer for this order" />
+                                    </Toolbar>
+                                    <f:SimpleForm editable="false" layout="ColumnLayout">
+                                        <f:content>
+                                            <Label text="Full Name" />
+                                            <Text text="{= ${orderModel>customer/fullName} || 'No customer selected' }" />
+                                            <Label text="Details" />
+                                            <Link text="Quick view" press=".onCustomerQuickView"
+                                                visible="{= !!${orderModel>customer/fullName} }" />
+                                            <Label text="Email" />
+                                            <Text text="{orderModel>customer/email}" />
+                                            <Label text="Phone" />
+                                            <Text text="{orderModel>customer/phone}" />
+                                        </f:content>
+                                    </f:SimpleForm>
+                                </VBox>
+                            </uxap:ObjectPageSubSection>
+                        </uxap:subSections>
+                    </uxap:ObjectPageSection>
+                </uxap:sections>
+            </uxap:ObjectPageLayout>
+        </content>
+    </Page>
+</mvc:View>

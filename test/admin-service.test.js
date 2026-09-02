@@ -90,13 +90,13 @@ describe('AdminService (CRM) Test Suite', () => {
 
     it('updateCustomerStatus sets At-Risk when averageRating is below 3', async () => {
         const { status, data } = await POST(
-            '/admin/updateCustomerStatus',
-            { customerID: EMMA_ID },
+            `/admin/Customers(customerID=${EMMA_ID},IsActiveEntity=true)/AdminService.updateCustomerStatus`,
+            {},
             ADMIN
         );
 
         expect(status).toBe(200);
-        expect(data.value).toBe(true);
+        expect(data.statusCode_code).toBe('At-Risk');
 
         const customer = await GET(`/admin/Customers(${EMMA_ID})`, ADMIN);
         expect(customer.data.statusCode_code).toBe('At-Risk');
@@ -107,8 +107,8 @@ describe('AdminService (CRM) Test Suite', () => {
 
         try {
             await POST(
-                '/admin/updateCustomerStatus',
-                { customerID: UNKNOWN_ID },
+                `/admin/Customers(customerID=${UNKNOWN_ID},IsActiveEntity=true)/AdminService.updateCustomerStatus`,
+                {},
                 ADMIN
             );
         } catch (error) {

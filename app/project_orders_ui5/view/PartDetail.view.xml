@@ -1,0 +1,28 @@
+<mvc:View
+    controllerName="projectordersui5.controller.PartDetail"
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:f="sap.ui.layout.form">
+    <Page title="Mechanical Part" showNavButton="true" navButtonPress=".onNavBack">
+        <headerContent>
+            <Button text="{i18n>saveOrder}" type="Emphasized" press=".onSave"
+                visible="{appView>/canManageParts}" tooltip="Save part changes" />
+            <Button text="{i18n>deleteOrder}" press=".onDelete"
+                visible="{appView>/canManageParts}" tooltip="Delete this part" />
+        </headerContent>
+        <content>
+            <f:SimpleForm editable="{appView>/canManageParts}" layout="ColumnLayout" class="sapUiSmallMargin">
+                <f:content>
+                    <Label text="Name" />
+                    <Input value="{orderModel>name}" editable="{appView>/canManageParts}" />
+                    <Label text="Description" />
+                    <Input value="{orderModel>description}" editable="{appView>/canManageParts}" />
+                    <Label text="Price" />
+                    <Input value="{ path: 'orderModel>price', type: 'sap.ui.model.odata.type.Decimal', constraints: { precision: 15, scale: 2 } }" editable="{appView>/canManageParts}" />
+                    <Label text="Quantity In Stock" />
+                    <Input value="{ path: 'orderModel>quantityInStock', type: 'sap.ui.model.odata.type.Int32' }" editable="{appView>/canManageParts}" />
+                </f:content>
+            </f:SimpleForm>
+        </content>
+    </Page>
+</mvc:View>
